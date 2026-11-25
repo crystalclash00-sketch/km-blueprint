@@ -23,6 +23,7 @@ import { BanglaCenterView } from './components/BanglaCenterView';
 import { TextbookDiscoveryView } from './components/TextbookDiscoveryView';
 import { OwnerPanel } from './components/OwnerPanel';
 import { RoutineCalendarView } from './components/RoutineCalendarView';
+import { AuthView } from './components/AuthView';
 import {
   HelpCircle,
   FileText,
@@ -321,6 +322,10 @@ const MainContentRouter: React.FC = () => {
     case 'missions':
     case 'routine_calendar':
       return <RoutineCalendarView />;
+
+    case 'login':
+    case 'landing':
+      return <AuthView />;
 
     case 'settings':
     case 'notifications':

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { exportFullDatabaseJson } from '../services/storage';
+import { nctb13SubjectMasterCatalog } from '../data/kmAll13CurriculumCatalog';
 import {
   Shield,
   Download,
@@ -12,7 +13,15 @@ import {
   Sparkles,
   CheckCircle,
   FileCode,
-  HardDrive
+  HardDrive,
+  KeyRound,
+  AlertTriangle,
+  RefreshCw,
+  Plus,
+  Trash2,
+  Lock,
+  Layers,
+  Search
 } from 'lucide-react';
 
 export const OwnerPanel: React.FC = () => {
@@ -22,20 +31,32 @@ export const OwnerPanel: React.FC = () => {
     accounts,
     hscConfig,
     researchItems,
-    publishResearch
+    publishResearch,
+    registrationMode,
+    setRegistrationMode,
+    invitations,
+    generateNewInviteCode,
+    deleteStudentAccount
   } = useApp();
 
-  const [activeTab, setActiveTab] = useState<'content' | 'accounts' | 'hsc' | 'backup' | 'quotas'>('content');
+  const [activeTab, setActiveTab] = useState<'content' | 'curriculum13' | 'students' | 'invitations' | 'hsc' | 'backup' | 'quotas'>('content');
+  const [newInviteRole, setNewInviteRole] = useState<'student' | 'owner'>('student');
+  const [newInviteTargetYear, setNewInviteTargetYear] = useState<number>(2026);
+  const [inviteLabel, setInviteLabel] = useState<string>('');
+  const [selectedSubjectFilter, setSelectedSubjectFilter] = useState<string>('all');
 
+  // Hard security guard: If not owner, immediately block render
   if (currentUser.role !== 'owner') {
     return (
-      <div className="p-12 text-center bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 space-y-3">
-        <Shield className="w-12 h-12 text-rose-500 mx-auto" />
-        <h3 className="text-lg font-bold text-slate-900 dark:text-white">
-          প্রবেশাধিকার সংরক্ষিত (Restricted to Owner)
+      <div className="p-12 text-center bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 space-y-4">
+        <div className="w-16 h-16 rounded-full bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 flex items-center justify-center mx-auto">
+          <Lock className="w-8 h-8" />
+        </div>
+        <h3 className="text-xl font-black text-slate-900 dark:text-white">
+          প্রবেশাধিকার সংরক্ষিত (Restricted to Sole Owner)
         </h3>
-        <p className="text-xs text-slate-500 max-w-md mx-auto">
-          এই নিয়ন্ত্রণ প্যানেল শুধুমাত্র শিক্ষা প্ল্যাটফর্মের স্বত্ত্বাধিকারী (Owner / Academic Director)-এর জন্য উন্মুক্ত।
+        <p className="text-xs text-slate-500 max-w-md mx-auto leading-relaxed">
+          এই নিয়ন্ত্রণ প্যানেল শুধুমাত্র প্ল্যাটফর্মের প্রধান স্বত্ত্বাধিকারী (Platform Creator & Sole Owner)-এর জন্য বরাদ্দকৃত। শিক্ষার্থীরা এই প্যানেলে প্রবেশাধিকার পান না।
         </p>
       </div>
     );
@@ -52,22 +73,33 @@ export const OwnerPanel: React.FC = () => {
     URL.revokeObjectURL(url);
   };
 
+  const handleCreateInvite = () => {
+    generateNewInviteCode({
+      role: newInviteRole,
+      targetYear: newInviteTargetYear,
+      label: inviteLabel.trim() || 'Student Access Key'
+    });
+    setInviteLabel('');
+    alert('নতুন সিকিউর ইনভাইটেশন কোড সফলভাবে জেনারেট হয়েছে!');
+  };
+
   return (
     <div className="space-y-6 pb-12 animate-fade-in">
+      {/* Header */}
       <div>
         <div className="flex items-center gap-2 mb-1">
           <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300 flex items-center gap-1">
-            <Shield className="w-3 h-3" /> Master Administration
+            <Shield className="w-3.5 h-3.5" /> Sole Owner Administration
           </span>
           <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300">
-            K&M Blueprint v1.0
+            K&M Blueprint Core v2.0
           </span>
         </div>
         <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">
           মাস্টার কন্ট্রোল প্যানেল (Owner Control Panel)
         </h2>
         <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
-          এইচএসসি পাঠ্যক্রম, প্রশ্ন ব্যাংক, এআই গবেষণা কনটেন্ট অনুমোদন, শিক্ষার্থী আমন্ত্রণ ও ব্যাকআপ ব্যবস্থাপনা
+          ১৩টি বিষয়, প্রশ্ন ব্যাংক, এআই গবেষণা অনুমোদন, শিক্ষার্থী সেলফ-রেজিস্ট্রেশন ও ক্লাউড ডাটাবেস নিরাপত্তা
         </p>
       </div>
 
@@ -81,17 +113,37 @@ export const OwnerPanel: React.FC = () => {
               : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-800'
           }`}
         >
-          এআই কনটেন্ট অনুমোদন ({researchItems.filter(r => r.status !== 'Published').length})
+          এআই গবেষণা অনুমোদন ({researchItems.filter(r => r.status !== 'Published').length})
         </button>
         <button
-          onClick={() => setActiveTab('accounts')}
+          onClick={() => setActiveTab('curriculum13')}
           className={`px-4 py-2 text-xs font-bold rounded-2xl transition shrink-0 ${
-            activeTab === 'accounts'
+            activeTab === 'curriculum13'
               ? 'bg-blue-600 text-white shadow-sm'
               : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-800'
           }`}
         >
-          শিক্ষার্থী আমন্ত্রণ ও অ্যাকাউন্টস
+          ১৩টি বিষয়ের পাঠ্যক্রম ক্যাটালগ
+        </button>
+        <button
+          onClick={() => setActiveTab('students')}
+          className={`px-4 py-2 text-xs font-bold rounded-2xl transition shrink-0 ${
+            activeTab === 'students'
+              ? 'bg-blue-600 text-white shadow-sm'
+              : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-800'
+          }`}
+        >
+          শিক্ষার্থী ব্যবস্থাপনা ({accounts.filter(a => a.role !== 'owner').length})
+        </button>
+        <button
+          onClick={() => setActiveTab('invitations')}
+          className={`px-4 py-2 text-xs font-bold rounded-2xl transition shrink-0 ${
+            activeTab === 'invitations'
+              ? 'bg-blue-600 text-white shadow-sm'
+              : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-800'
+          }`}
+        >
+          রেজিস্ট্রেশন মোড ও ইনভাইটেশন
         </button>
         <button
           onClick={() => setActiveTab('backup')}
@@ -115,12 +167,17 @@ export const OwnerPanel: React.FC = () => {
         </button>
       </div>
 
-      {/* Tab 1: AI Content Approval */}
+      {/* TAB 1: AI Content Approval */}
       {activeTab === 'content' && (
         <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
-          <h3 className="text-base font-bold text-slate-900 dark:text-white">
-            পর্যালোচনা ও প্রকাশের জন্য অপেক্ষমান এআই লেকচারসমূহ
-          </h3>
+          <div className="flex items-center justify-between">
+            <h3 className="text-base font-bold text-slate-900 dark:text-white">
+              পর্যালোচনা ও প্রকাশের জন্য অপেক্ষমান এআই লেকচারসমূহ
+            </h3>
+            <span className="text-xs text-slate-500 font-mono">
+              মোট: {researchItems.length} টি ড্রাফট
+            </span>
+          </div>
 
           <div className="space-y-3">
             {researchItems.map(item => (
@@ -155,12 +212,93 @@ export const OwnerPanel: React.FC = () => {
         </div>
       )}
 
-      {/* Tab 2: Accounts Management */}
-      {activeTab === 'accounts' && (
+      {/* TAB 2: All 13 HSC Subjects Curriculum Catalog */}
+      {activeTab === 'curriculum13' && (
+        <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm space-y-5">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                বাংলাদেশ জাতীয় শিক্ষাক্রম (NCTB) ১৩টি বিষয়ের পূর্ণাঙ্গ তালিকা
+              </h3>
+              <p className="text-xs text-slate-500 mt-0.5">
+                সবগুলো পত্রের সরকারি অনুমোদিত অধ্যায় ও মূল ধারণার অডিট ক্যাটালগ
+              </p>
+            </div>
+            {/* Filter */}
+            <select
+              value={selectedSubjectFilter}
+              onChange={e => setSelectedSubjectFilter(e.target.value)}
+              className="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs font-bold text-slate-800 dark:text-slate-200"
+            >
+              <option value="all">সব বিষয় (All 13 Papers)</option>
+              <option value="ban">বাংলা (Bangla)</option>
+              <option value="eng">English</option>
+              <option value="ict">ICT</option>
+              <option value="phy">পদার্থবিজ্ঞান (Physics)</option>
+              <option value="chem">রসায়ন (Chemistry)</option>
+              <option value="bio">জীববিজ্ঞান (Biology)</option>
+              <option value="hmath">উচ্চতর গণিত (Higher Math)</option>
+            </select>
+          </div>
+
+          <div className="space-y-4">
+            {nctb13SubjectMasterCatalog
+              .filter(p => selectedSubjectFilter === 'all' || p.subjectId === selectedSubjectFilter)
+              .map(paper => (
+                <div key={paper.paperTitle} className="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/20 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300 font-mono">
+                        Code: {paper.code}
+                      </span>
+                      <h4 className="text-sm font-bold text-slate-900 dark:text-white">
+                        {paper.paperTitle}
+                      </h4>
+                    </div>
+                    <span className="text-xs font-bold text-slate-500">
+                      {paper.officialChapters.length} টি অধ্যায়
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+                    {paper.officialChapters.map(chap => (
+                      <div key={chap.chapterNumber} className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 text-xs space-y-1">
+                        <div className="flex items-center justify-between">
+                          <span className="font-bold text-blue-600 dark:text-blue-400 font-mono text-[11px]">
+                            Ch {chap.chapterNumber}
+                          </span>
+                          <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300">
+                            {chap.importance}
+                          </span>
+                        </div>
+                        <div className="font-bold text-slate-800 dark:text-slate-200 line-clamp-1">
+                          {chap.title}
+                        </div>
+                        <div className="text-[10px] text-slate-500 line-clamp-1">
+                          {chap.coreConcepts.join(' • ')}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+          </div>
+        </div>
+      )}
+
+      {/* TAB 3: Student Self-Registered Management */}
+      {activeTab === 'students' && (
         <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
-          <h3 className="text-base font-bold text-slate-900 dark:text-white">
-            প্ল্যাটফর্মের ৩টি নির্দিষ্ট অ্যাকাউন্ট (১ স্বত্ত্বাধিকারী + ২ শিক্ষার্থী)
-          </h3>
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                নিবন্ধিত শিক্ষার্থীদের তালিকা (Registered Students)
+              </h3>
+              <p className="text-xs text-slate-500">
+                শিক্ষার্থীরা নিজস্ব নাম ও ইমেইল দিয়ে নিজে রেজিস্ট্রেশন করবে এবং ক্লাউড ডাটাবেসে সেভ হবে
+              </p>
+            </div>
+          </div>
 
           <div className="space-y-3">
             {accounts.map(acc => (
@@ -171,22 +309,150 @@ export const OwnerPanel: React.FC = () => {
                 <div className="flex items-center gap-3">
                   <span className="text-2xl">{acc.avatar}</span>
                   <div>
-                    <div className="font-bold text-slate-900 dark:text-white text-sm">{acc.displayName}</div>
-                    <div className="text-slate-500">{acc.email} • রোল: {acc.role}</div>
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold text-slate-900 dark:text-white text-sm">{acc.displayName}</span>
+                      <span className="font-mono text-slate-400 text-xs">(@{acc.username})</span>
+                      {acc.role === 'owner' ? (
+                        <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300">
+                          Sole Owner
+                        </span>
+                      ) : (
+                        <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300">
+                          Student
+                        </span>
+                      )}
+                    </div>
+                    <div className="text-slate-500 mt-0.5">
+                      {acc.email || 'Email not provided'} • টার্গেট: HSC {acc.targetExamYear}
+                    </div>
                   </div>
                 </div>
-                <div className="font-mono text-slate-400 font-bold">PIN: {acc.pin}</div>
+
+                {acc.role !== 'owner' && (
+                  <button
+                    onClick={() => {
+                      if (confirm(`${acc.displayName} এর অ্যাকাউন্ট মুছে ফেলতে চান?`)) {
+                        deleteStudentAccount(acc.id);
+                      }
+                    }}
+                    className="p-2 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-xl transition"
+                    title="Delete Account"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                )}
               </div>
             ))}
           </div>
 
           <div className="p-4 rounded-2xl bg-blue-50/50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-900/40 text-xs text-blue-900 dark:text-blue-300">
-            🔒 <strong>গোপনীয়তা নীতি:</strong> স্বত্ত্বাধিকারী হিসেবেও আপনি শিক্ষার্থীদের ব্যক্তিগত স্টাডি নোট, পাসওয়ার্ড বা ব্যক্তিগত পড়ালেখা ইন্টারসেপ্ট করতে পারবেন না।
+            🔒 <strong>গোপনীয়তা নীতি:</strong> স্বত্ত্বাধিকারী হিসেবেও আপনি শিক্ষার্থীদের ব্যক্তিগত স্টাডি নোট বা পাসওয়ার্ড ইন্টারসেপ্ট করতে পারবেন না। ডাটাবেস RLS দ্বারা এটি সুরক্ষিত।
           </div>
         </div>
       )}
 
-      {/* Tab 3: Backup & Export */}
+      {/* TAB 4: Registration Mode & Invitations */}
+      {activeTab === 'invitations' && (
+        <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm space-y-6">
+          {/* Mode Selector */}
+          <div className="space-y-3">
+            <h3 className="text-base font-bold text-slate-900 dark:text-white">
+              শিক্ষার্থী রেজিস্ট্রেশন মোড কনফিগারেশন (Student Registration Mode)
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div
+                onClick={() => setRegistrationMode('open')}
+                className={`p-4 rounded-2xl border cursor-pointer transition ${
+                  registrationMode === 'open'
+                    ? 'border-blue-500 bg-blue-50/50 dark:bg-blue-950/30'
+                    : 'border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/40'
+                }`}
+              >
+                <div className="text-sm font-bold text-slate-900 dark:text-white">১. উন্মুক্ত (Open)</div>
+                <div className="text-xs text-slate-500 mt-1">লিংক পাওয়া যে কোনো শিক্ষার্থী নিজে একাউন্ট তৈরি করতে পারবে।</div>
+              </div>
+
+              <div
+                onClick={() => setRegistrationMode('invite_only')}
+                className={`p-4 rounded-2xl border cursor-pointer transition ${
+                  registrationMode === 'invite_only'
+                    ? 'border-blue-500 bg-blue-50/50 dark:bg-blue-950/30'
+                    : 'border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/40'
+                }`}
+              >
+                <div className="text-sm font-bold text-slate-900 dark:text-white">২. ইনভাইটেশন আবশ্যক (Invite Only)</div>
+                <div className="text-xs text-slate-500 mt-1">রেজিস্ট্রেশনের সময় আপনার দেওয়া ইনভাইট কোড বাধ্যতামূলক।</div>
+              </div>
+
+              <div
+                onClick={() => setRegistrationMode('disabled')}
+                className={`p-4 rounded-2xl border cursor-pointer transition ${
+                  registrationMode === 'disabled'
+                    ? 'border-blue-500 bg-blue-50/50 dark:bg-blue-950/30'
+                    : 'border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/40'
+                }`}
+              >
+                <div className="text-sm font-bold text-slate-900 dark:text-white">৩. রেজিস্ট্রেশন বন্ধ (Disabled)</div>
+                <div className="text-xs text-slate-500 mt-1">নতুন কোনো শিক্ষার্থী একাউন্ট খুলতে পারবে না, শুধু বর্তমানরা লগইন করবে।</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Invitation Generator */}
+          <div className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 space-y-4">
+            <h4 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+              <KeyRound className="w-4 h-4 text-blue-600" />
+              নতুন ইনভাইটেশন কোড তৈরি করুন
+            </h4>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <input
+                type="text"
+                value={inviteLabel}
+                onChange={e => setInviteLabel(e.target.value)}
+                placeholder="লেবেল (যেমন: তানভীরের কোড)"
+                className="px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs"
+              />
+              <select
+                value={newInviteTargetYear}
+                onChange={e => setNewInviteTargetYear(Number(e.target.value))}
+                className="px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs"
+              >
+                <option value={2026}>HSC 2026 Batch</option>
+                <option value={2027}>HSC 2027 Batch</option>
+                <option value={2028}>HSC 2028 Batch</option>
+              </select>
+              <button
+                onClick={handleCreateInvite}
+                className="px-4 py-2 rounded-xl font-bold text-xs text-white bg-blue-600 hover:bg-blue-700 transition flex items-center justify-center gap-1.5 shadow-sm"
+              >
+                <Plus className="w-4 h-4" />
+                কোড জেনারেট করুন
+              </button>
+            </div>
+
+            {/* List of active codes */}
+            <div className="space-y-2 pt-2">
+              <div className="text-xs font-bold text-slate-700 dark:text-slate-300">সক্রিয় ইনভাইট কোডসমূহ:</div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {invitations.map(inv => (
+                  <div key={inv.code} className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700/60 flex items-center justify-between text-xs">
+                    <div>
+                      <div className="font-mono font-bold text-blue-600 dark:text-blue-400">{inv.code}</div>
+                      <div className="text-[10px] text-slate-500">{inv.label} • HSC {inv.targetYear}</div>
+                    </div>
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold">
+                      {inv.isUsed ? 'Used' : 'Available'}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* TAB 5: Backup & Export */}
       {activeTab === 'backup' && (
         <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
           <h3 className="text-base font-bold text-slate-900 dark:text-white">
@@ -208,7 +474,7 @@ export const OwnerPanel: React.FC = () => {
         </div>
       )}
 
-      {/* Tab 4: Free-Tier Quota Documentation */}
+      {/* TAB 6: Free-Tier Quota Documentation */}
       {activeTab === 'quotas' && (
         <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
           <h3 className="text-base font-bold text-slate-900 dark:text-white">
@@ -226,7 +492,7 @@ export const OwnerPanel: React.FC = () => {
             <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 space-y-1">
               <div className="font-bold text-slate-800 dark:text-slate-200">২. সুপারবেস পোস্টগ্রেসকিউএল (Supabase Free Tier):</div>
               <div className="text-slate-600 dark:text-slate-400">
-                ৫০০ MB ডাটাবেস স্টোরেজ, ১ GB ফাইল স্টোরেজ, ৫০,০০০ মাসিক সক্রিয় ব্যবহারকারী, যা ৩ জনের জন্য আজীবন সম্পূর্ণ বিনামূল্যে প্রযোজ্য।
+                ৫০০ MB ডাটাবেস স্টোরেজ, ১ GB ফাইল স্টোরেজ, ৫০,০০০ মাসিক সক্রিয় ব্যবহারকারী, যা শিক্ষার্থীদের জন্য আজীবন সম্পূর্ণ বিনামূল্যে প্রযোজ্য।
               </div>
             </div>
 

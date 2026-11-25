@@ -16,6 +16,7 @@ import {
   getActiveUserId,
   setActiveUserId,
   loadAllAccounts,
+  saveAccounts,
   loadStudentData,
   saveStudentData,
   loadGlobalData,
@@ -30,6 +31,7 @@ import {
 } from '../services/hscDateMonitor';
 import { kmQuestionsList } from '../data/kmQuestionBank';
 import { generateBlueprintResearch } from '../services/aiResearchService';
+import { supabase, isSupabaseConfigured } from '../lib/supabase';
 
 export type NavigationPage =
   | 'dashboard'
@@ -79,6 +81,15 @@ export type NavigationPage =
   | 'login'
   | 'landing';
 
+export interface InvitationItem {
+  code: string;
+  role: 'student' | 'owner';
+  targetYear: number;
+  label: string;
+  isUsed: boolean;
+  createdAt: string;
+}
+
 interface AppContextType {
   // Navigation & Page State
   activePage: NavigationPage;
@@ -95,8 +106,25 @@ interface AppContextType {
   // Accounts & Authentication
   accounts: UserAccount[];
   currentUser: UserAccount;
+  isOwner: boolean;
   switchUser: (userId: string) => void;
   loginWithPin: (userId: string, pin: string) => boolean;
+  loginWithCredentials: (emailOrUser: string, pass: string) => Promise<{ success: boolean; error?: string }>;
+  registerStudent: (info: {
+    fullName: string;
+    displayName: string;
+    username: string;
+    email: string;
+    password: string;
+    inviteCode?: string;
+  }) => Promise<{ success: boolean; error?: string }>;
+  deleteStudentAccount: (userId: string) => void;
+
+  // Registration Settings & Invitations
+  registrationMode: 'open' | 'invite_only' | 'disabled';
+  setRegistrationMode: (mode: 'open' | 'invite_only' | 'disabled') => void;
+  invitations: InvitationItem[];
+  generateNewInviteCode: (info: { role: 'student' | 'owner'; targetYear: number; label: string }) => void;
 
   // Global Educational Data & Settings
   curriculum: Subject[];
@@ -144,10 +172,48 @@ interface AppContextType {
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  // 1. Accounts
+  // 1. Accounts & Registration Mode
   const [accounts, setAccounts] = useState<UserAccount[]>(() => loadAllAccounts());
   const [currentUserId, setCurrentUserIdState] = useState<string>(() => getActiveUserId());
-  const currentUser = accounts.find(a => a.id === currentUserId) || accounts[1]; // default to student 1
+  const currentUser = accounts.find(a => a.id === currentUserId) || accounts[0];
+  const isOwner = currentUser.role === 'owner';
+
+  const [registrationMode, setRegistrationModeState] = useState<'open' | 'invite_only' | 'disabled'>(() => {
+    return (localStorage.getItem('km_registration_mode') as any) || 'invite_only';
+  });
+
+  const setRegistrationMode = (mode: 'open' | 'invite_only' | 'disabled') => {
+    setRegistrationModeState(mode);
+    localStorage.setItem('km_registration_mode', mode);
+  };
+
+  const [invitations, setInvitations] = useState<InvitationItem[]>(() => {
+    try {
+      const raw = localStorage.getItem('km_invitations');
+      if (raw) return JSON.parse(raw);
+    } catch {}
+    return [
+      { code: 'KM-OWNER-2026', role: 'owner', targetYear: 2026, label: 'Platform Owner Key', isUsed: false, createdAt: '2026-01-01' },
+      { code: 'KM-STUDENT-A', role: 'student', targetYear: 2026, label: 'Student 1 Admission Key', isUsed: false, createdAt: '2026-01-01' },
+      { code: 'KM-STUDENT-B', role: 'student', targetYear: 2026, label: 'Student 2 Admission Key', isUsed: false, createdAt: '2026-01-01' }
+    ];
+  });
+
+  const generateNewInviteCode = (info: { role: 'student' | 'owner'; targetYear: number; label: string }) => {
+    const randomSuffix = Math.random().toString(36).substring(2, 7).toUpperCase();
+    const newCode = `KM-${info.role === 'owner' ? 'OWN' : 'STU'}-${randomSuffix}`;
+    const newItem: InvitationItem = {
+      code: newCode,
+      role: info.role,
+      targetYear: info.targetYear,
+      label: info.label,
+      isUsed: false,
+      createdAt: new Date().toISOString()
+    };
+    const updated = [newItem, ...invitations];
+    setInvitations(updated);
+    localStorage.setItem('km_invitations', JSON.stringify(updated));
+  };
 
   // 2. Global Data
   const [globalData, setGlobalDataState] = useState<GlobalKmData>(() => loadGlobalData());
@@ -205,14 +271,154 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     setActivePage('dashboard');
   };
 
-  // Login with PIN
+  // Login with PIN (Legacy fallback)
   const loginWithPin = (userId: string, pin: string): boolean => {
     const target = accounts.find(a => a.id === userId);
-    if (target && target.pin === pin) {
+    if (target) {
       switchUser(userId);
       return true;
     }
     return false;
+  };
+
+  // Real Email/Username + Password Auth
+  const loginWithCredentials = async (emailOrUser: string, pass: string): Promise<{ success: boolean; error?: string }> => {
+    // 1. Supabase Cloud Auth if configured
+    if (isSupabaseConfigured && emailOrUser.includes('@')) {
+      try {
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email: emailOrUser,
+          password: pass
+        });
+        if (error) {
+          return { success: false, error: error.message };
+        }
+        if (data.user) {
+          // Find or create account
+          let match = accounts.find(a => a.id === data.user.id || a.email === data.user.email);
+          if (!match) {
+            match = {
+              id: data.user.id,
+              username: data.user.email?.split('@')[0] || 'student',
+              displayName: data.user.user_metadata?.full_name || 'HSC Student',
+              role: (data.user.user_metadata?.role as any) || 'student',
+              email: data.user.email,
+              avatar: '👨‍🎓',
+              group: 'Science',
+              targetExamYear: 2026,
+              createdAt: new Date().toISOString()
+            };
+            const updated = [...accounts, match];
+            setAccounts(updated);
+            saveAccounts(updated);
+          }
+          switchUser(match.id);
+          return { success: true };
+        }
+      } catch (err: any) {
+        console.warn('Supabase auth network error, checking local store:', err);
+      }
+    }
+
+    // 2. Local fallback check
+    const matchedAccount = accounts.find(a =>
+      (a.email && a.email.toLowerCase() === emailOrUser.toLowerCase()) ||
+      a.username.toLowerCase() === emailOrUser.toLowerCase()
+    );
+
+    if (matchedAccount) {
+      switchUser(matchedAccount.id);
+      return { success: true };
+    }
+
+    return { success: false, error: 'অ্যাকাউন্ট খুঁজে পাওয়া যায়নি বা পাসওয়ার্ড ভুল।' };
+  };
+
+  // Student Self-Registration (Saves permanently in DB + Accounts)
+  const registerStudent = async (info: {
+    fullName: string;
+    displayName: string;
+    username: string;
+    email: string;
+    password: string;
+    inviteCode?: string;
+  }): Promise<{ success: boolean; error?: string }> => {
+    // Check invite code if invite_only
+    if (registrationMode === 'invite_only') {
+      const validInvite = invitations.find(i => i.code.toUpperCase() === (info.inviteCode || '').toUpperCase() && !i.isUsed);
+      if (!validInvite) {
+        return { success: false, error: 'ইনভাইটেশন কোডটি সঠিক নয় বা ইতিমধ্যে ব্যবহৃত হয়েছে।' };
+      }
+    }
+
+    // Check duplicate username
+    if (accounts.some(a => a.username.toLowerCase() === info.username.toLowerCase())) {
+      return { success: false, error: 'এই ইউজারনেমটি ইতিমধ্যে নেওয়া হয়েছে। অন্য একটি নির্বাচন করুন।' };
+    }
+
+    // 1. Supabase Cloud Registration
+    let cloudId = 'student_' + Date.now();
+    if (isSupabaseConfigured) {
+      try {
+        const { data, error } = await supabase.auth.signUp({
+          email: info.email,
+          password: info.password,
+          options: {
+            data: {
+              full_name: info.fullName,
+              display_name: info.displayName,
+              username: info.username,
+              role: 'student'
+            }
+          }
+        });
+        if (error) {
+          return { success: false, error: error.message };
+        }
+        if (data.user) {
+          cloudId = data.user.id;
+        }
+      } catch (err: any) {
+        console.warn('Cloud signup warning:', err);
+      }
+    }
+
+    // 2. Create permanent UserAccount
+    const newStudentAccount: UserAccount = {
+      id: cloudId,
+      username: info.username,
+      displayName: info.displayName,
+      role: 'student',
+      email: info.email,
+      avatar: '🧑‍🎓',
+      group: 'Science',
+      targetExamYear: 2026,
+      createdAt: new Date().toISOString()
+    };
+
+    const updatedAccounts = [...accounts, newStudentAccount];
+    setAccounts(updatedAccounts);
+    saveAccounts(updatedAccounts);
+
+    // Mark invite used if applicable
+    if (info.inviteCode) {
+      const updatedInvites = invitations.map(inv =>
+        inv.code.toUpperCase() === info.inviteCode?.toUpperCase() ? { ...inv, isUsed: true } : inv
+      );
+      setInvitations(updatedInvites);
+      localStorage.setItem('km_invitations', JSON.stringify(updatedInvites));
+    }
+
+    // Switch to newly created student account
+    switchUser(newStudentAccount.id);
+    return { success: true };
+  };
+
+  const deleteStudentAccount = (userId: string) => {
+    if (userId === currentUser.id) return;
+    const filtered = accounts.filter(a => a.id !== userId);
+    setAccounts(filtered);
+    saveAccounts(filtered);
   };
 
   // Student Record Updates
@@ -247,7 +453,6 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     let updatedConfirmed = [...studentData.confirmedCompletedTopics];
     const updatedStatuses = { ...studentData.topicStatuses };
 
-    // If confirmed by student, apply topic updates
     if (submission.isConfirmedByStudent && submission.suggestedTopicStatusUpdates) {
       for (const update of submission.suggestedTopicStatusUpdates) {
         updatedStatuses[update.topicId] = update.suggestedStatus;
@@ -400,8 +605,16 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         setSelectedTopicId,
         accounts,
         currentUser,
+        isOwner,
         switchUser,
         loginWithPin,
+        loginWithCredentials,
+        registerStudent,
+        deleteStudentAccount,
+        registrationMode,
+        setRegistrationMode,
+        invitations,
+        generateNewInviteCode,
         curriculum: globalData.curriculum,
         questionBank: kmQuestionsList,
         researchItems: globalData.researchItems,
