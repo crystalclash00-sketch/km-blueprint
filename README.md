@@ -93,11 +93,18 @@ The platform enforces strict Row Level Security (RLS) and local isolation among 
 - Node.js v20+ and npm
 
 ### Steps
-1. Navigate to the project directory:
+1. Clone repository to root:
    ```bash
-   cd C:\Users\User\.gemini\antigravity\scratch\hsc-quest
+   git clone <YOUR_REPO_URL> .
+   # or
+   git clone <YOUR_REPO_URL> hsc-quest
+   cd hsc-quest
    ```
-2. Run development server:
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Run development server:
    ```bash
    npm run dev
    ```
