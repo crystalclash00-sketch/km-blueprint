@@ -5,8 +5,8 @@ import { defineConfig } from 'vite'
 export default defineConfig({
   plugins: [react()],
   build: {
-    outDir: '.',
-    emptyOutDir: false,
+    outDir: './dist',
+    emptyOutDir: true,
     assetsDir: 'assets',
     sourcemap: false
   }

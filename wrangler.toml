@@ -1,8 +1,8 @@
 name = "km-blueprint"
 compatibility_date = "2026-11-01"
 
-# Pages configuration - build output directory set to root
-pages_build_output_dir = "."
+# Pages configuration - build output directory set to ./dist
+pages_build_output_dir = "./dist"
 
 # Background Scheduled Cron Worker for HSC Date Monitor (Asia/Dhaka 00:00)
 [triggers]
