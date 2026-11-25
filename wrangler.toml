@@ -1,8 +1,12 @@
 name = "km-blueprint"
 compatibility_date = "2026-11-01"
 
-# Pages configuration - build output directory set to ./dist
-pages_build_output_dir = "./dist"
+# Pages configuration - build output directory set to dist
+pages_build_output_dir = "dist"
+
+# Cloudflare Static Assets configuration
+[assets]
+directory = "dist"
 
 # Background Scheduled Cron Worker for HSC Date Monitor (Asia/Dhaka 00:00)
 [triggers]
