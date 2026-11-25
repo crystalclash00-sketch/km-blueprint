@@ -1,1 +1,10 @@
-/* /index.html 200
+# Cloudflare Pages SPA Routing Rules
+# Exclude static assets, icons, manifest and sw from SPA rewrite to avoid redirect loops
+/assets/*  /assets/:splat  200
+/favicon.svg  /favicon.svg  200
+/icons.svg  /icons.svg  200
+/manifest.json  /manifest.json  200
+/sw.js  /sw.js  200
+
+# Fallback all other client-side routes to index.html without circular loop
+/*  /index.html  200
