@@ -1,0 +1,60 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .btn-duo-green {
+    @apply bg-duo-green hover:bg-[#4ebb02] active:translate-y-1 active:shadow-none text-white font-bold py-2.5 px-5 rounded-2xl shadow-duo-green transition-all duration-150 inline-flex items-center justify-center gap-2;
+  }
+  .btn-duo-blue {
+    @apply bg-duo-blue hover:bg-[#19a1e0] active:translate-y-1 active:shadow-none text-white font-bold py-2.5 px-5 rounded-2xl shadow-duo-blue transition-all duration-150 inline-flex items-center justify-center gap-2;
+  }
+  .btn-duo-purple {
+    @apply bg-duo-purple hover:bg-[#c270f8] active:translate-y-1 active:shadow-none text-white font-bold py-2.5 px-5 rounded-2xl shadow-duo-purple transition-all duration-150 inline-flex items-center justify-center gap-2;
+  }
+  .btn-duo-yellow {
+    @apply bg-duo-yellow hover:bg-[#eeb900] active:translate-y-1 active:shadow-none text-slate-900 font-bold py-2.5 px-5 rounded-2xl shadow-duo-yellow transition-all duration-150 inline-flex items-center justify-center gap-2;
+  }
+  .btn-duo-red {
+    @apply bg-duo-red hover:bg-[#f03e3e] active:translate-y-1 active:shadow-none text-white font-bold py-2.5 px-5 rounded-2xl shadow-duo-red transition-all duration-150 inline-flex items-center justify-center gap-2;
+  }
+  .btn-duo-outline {
+    @apply bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50 active:translate-y-1 active:shadow-none text-slate-700 dark:text-slate-200 font-bold py-2.5 px-5 rounded-2xl shadow-duo-card dark:shadow-duo-darkcard transition-all duration-150 inline-flex items-center justify-center gap-2;
+  }
+  .duo-card {
+    @apply bg-white dark:bg-slate-800/90 rounded-2xl border-2 border-slate-200 dark:border-slate-700 shadow-duo-card dark:shadow-duo-darkcard p-5;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: #334155;
+}
+
+/* Animations */
+@keyframes pulse-subtle {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.04); }
+}
+.animate-pulse-subtle {
+  animation: pulse-subtle 2s infinite ease-in-out;
+}
+
+@keyframes bounce-gentle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+.animate-bounce-gentle {
+  animation: bounce-gentle 2.5s infinite ease-in-out;
+}

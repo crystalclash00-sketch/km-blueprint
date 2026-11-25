@@ -1,0 +1,16 @@
+{
+  "name": "K&M Blueprint — Bangladesh's First All-in-One HSC Learning Platform",
+  "short_name": "K&M Blueprint",
+  "description": "Complete Bangladesh HSC Learning Platform, AI Research System, Smart Progress Tracking and Examination Preparation",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#090d16",
+  "theme_color": "#2563eb",
+  "icons": [
+    {
+      "src": "/vite.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}
