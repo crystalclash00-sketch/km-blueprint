@@ -163,7 +163,7 @@ export const OwnerPanel: React.FC = () => {
               : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-800'
           }`}
         >
-          ৳০ ফ্রি-টিয়ার কোটা ডকুমেন্টেশন
+          ক্লাউড আর্কিটেকচার ও সিস্টেম কোটা
         </button>
       </div>
 
@@ -474,32 +474,32 @@ export const OwnerPanel: React.FC = () => {
         </div>
       )}
 
-      {/* TAB 6: Free-Tier Quota Documentation */}
+      {/* TAB 6: Cloud Architecture & Quota Documentation */}
       {activeTab === 'quotas' && (
         <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
           <h3 className="text-base font-bold text-slate-900 dark:text-white">
-            ৳০/মাস ফ্রি-টিয়ার স্থাপত্য ও অনুমোদিত সীমা (Free-Tier Quotas)
+            ক্লাউড স্থাপত্য ও অনুমোদিত সিস্টেম কোটা (Cloud Architecture & Quotas)
           </h3>
 
           <div className="space-y-3 text-xs">
             <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 space-y-1">
               <div className="font-bold text-slate-800 dark:text-slate-200">১. ক্লাউডফ্লেয়ার পেজেস (Cloudflare Pages):</div>
               <div className="text-slate-600 dark:text-slate-400">
-                বিনামূল্যে আনলিমিটেড স্ট্যাটিক ব্যান্ডউইথ, প্রতি মাসে ৫০০টি বিল্ড, এবং গ্লোবাল এজ সিডিএন ক্যাশিং।
+                আনলিমিটেড স্ট্যাটিক ব্যান্ডউইথ, প্রতি মাসে ৫০০টি বিল্ড, এবং গ্লোবাল এজ সিডিএন ক্যাশিং।
               </div>
             </div>
 
             <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 space-y-1">
-              <div className="font-bold text-slate-800 dark:text-slate-200">২. সুপারবেস পোস্টগ্রেসকিউএল (Supabase Free Tier):</div>
+              <div className="font-bold text-slate-800 dark:text-slate-200">২. সুপারবেস ডাটাবেস (Supabase Cloud Database):</div>
               <div className="text-slate-600 dark:text-slate-400">
-                ৫০০ MB ডাটাবেস স্টোরেজ, ১ GB ফাইল স্টোরেজ, ৫০,০০০ মাসিক সক্রিয় ব্যবহারকারী, যা শিক্ষার্থীদের জন্য আজীবন সম্পূর্ণ বিনামূল্যে প্রযোজ্য।
+                ৫০০ MB ডাটাবেস স্টোরেজ, ১ GB ফাইল স্টোরেজ, ৫০,০০০ মাসিক সক্রিয় ব্যবহারকারী, যা প্ল্যাটফর্মের জন্য স্থায়ীভাবে সক্রিয়।
               </div>
             </div>
 
             <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 space-y-1">
-              <div className="font-bold text-slate-800 dark:text-slate-200">৩. গুগল জেমিনি এআই (Google AI Studio Free Tier):</div>
+              <div className="font-bold text-slate-800 dark:text-slate-200">৩. গুগল জেমিনি এআই (Google Gemini API):</div>
               <div className="text-slate-600 dark:text-slate-400">
-                প্রতি মিনিটে ১৫টি রিকোয়েস্ট (15 RPM) এবং প্রতিদিন ১,৫০০টি রিকোয়েস্ট সম্পূর্ণ বিনামূল্যে। কোনো ক্রেডিট কার্ড প্রয়োজন হয় না।
+                প্রতি মিনিটে ১৫টি রিকোয়েস্ট (15 RPM) এবং প্রতিদিন ১,৫০০টি গবেষণা রিকোয়েস্ট বরাদ্দ।
               </div>
             </div>
           </div>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { X, Shield, Lock, Check, AlertCircle, KeyRound, Sparkles } from 'lucide-react';
+import { X, Shield, Lock, Check, AlertCircle, KeyRound, Sparkles, LogOut } from 'lucide-react';
 
 export const AccountSwitcherModal: React.FC = () => {
   const {
@@ -8,7 +8,8 @@ export const AccountSwitcherModal: React.FC = () => {
     setIsAccountModalOpen,
     accounts,
     currentUser,
-    switchUser
+    switchUser,
+    logout
   } = useApp();
 
   const [selectedAccountId, setSelectedAccountId] = useState<string>(currentUser.id);
@@ -176,20 +177,33 @@ export const AccountSwitcherModal: React.FC = () => {
             <div>• কোনো শিক্ষার্থীর পিন বা পাসওয়ার্ড কখনোই উন্মুক্ত বা দৃশ্যমান থাকবে না।</div>
           </div>
 
-          <div className="flex items-center justify-end gap-2.5 pt-2">
+          <div className="flex items-center justify-between gap-2.5 pt-2">
             <button
               type="button"
-              onClick={() => setIsAccountModalOpen(false)}
-              className="px-4 py-2 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl"
+              onClick={() => {
+                setIsAccountModalOpen(false);
+                logout();
+              }}
+              className="px-3 py-2 text-xs font-bold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 rounded-xl flex items-center gap-1.5 transition"
             >
-              বাতিল
+              <LogOut className="w-3.5 h-3.5" />
+              <span>লগআউট</span>
             </button>
-            <button
-              type="submit"
-              className="px-5 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-md shadow-blue-500/20"
-            >
-              প্রবেশ নিশ্চিত করুন
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setIsAccountModalOpen(false)}
+                className="px-4 py-2 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl"
+              >
+                বাতিল
+              </button>
+              <button
+                type="submit"
+                className="px-5 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-md shadow-blue-500/20"
+              >
+                প্রবেশ নিশ্চিত করুন
+              </button>
+            </div>
           </div>
         </form>
       </div>

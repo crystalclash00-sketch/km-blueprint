@@ -27,20 +27,35 @@ export const nctb13SubjectMasterCatalog: OfficialCurriculumPaperInfo[] = [
     code: '101',
     paperNumber: 1,
     paperTitle: 'বাংলা ১ম পত্র (সাহিত্য পাঠ ও সহপাঠ)',
-    totalOfficialChapters: 12,
+    totalOfficialChapters: 24,
     officialChapters: [
-      { chapterNumber: 1, title: 'অপরিচিতা — রবীন্দ্রনাথ ঠাকুর', englishTitle: 'Oporichita', coreConcepts: ['যৌতুকবিরোধী চেতনা', 'কল্যাণীর ব্যক্তিত্ব', 'অনুপমের মনস্তত্ত্ব'], importance: 'Most Important (3-Star)' },
-      { chapterNumber: 2, title: 'বিলাসী — শরৎচন্দ্র চট্টোপাধ্যায়', englishTitle: 'Bilashi', coreConcepts: ['বর্ণবৈষম্য', 'অকৃত্রিম মানবপ্রেম', 'বিলাসীর আত্মোৎসর্গ'], importance: 'Most Important (3-Star)' },
-      { chapterNumber: 3, title: 'আমার পথ — কাজী নজরুল ইসলাম', englishTitle: 'Amar Poth', coreConcepts: ['আত্মবিশ্বাস', 'সত্যের স্বরূপ', 'ভণ্ডামিবিরোধিতা'], importance: 'High Priority' },
-      { chapterNumber: 4, title: 'মানব-কল্যাণ — আবুল ফজল', englishTitle: 'Manob Kalyan', coreConcepts: ['প্রকৃত মানবকল্যাণ', 'আত্মমর্যাদা', 'মানবমুক্তি'], importance: 'High Priority' },
-      { chapterNumber: 5, title: 'বায়ান্নর দিনগুলো — শেখ মুজিবুর রহমান', englishTitle: 'Bayannor Dingulo', coreConcepts: ['ভাষা আন্দোলন', 'অনশন ধর্মঘট', 'বঙ্গবন্ধুর রাজনৈতিক ত্যাগ'], importance: 'Most Important (3-Star)' },
-      { chapterNumber: 6, title: 'রেইনকোট — আখতারুজ্জামান ইলিয়াস', englishTitle: 'Raincoat', coreConcepts: ['মুক্তিযুদ্ধের চেতনা', 'নুরুল হুদার মানসিক রূপান্তর', 'গেরিলা যুদ্ধ'], importance: 'Most Important (3-Star)' },
-      { chapterNumber: 7, title: 'ঐকতান — রবীন্দ্রনাথ ঠাকুর', englishTitle: 'Oikotan', coreConcepts: ['কবির আত্মসমালোচনা', 'শ্রমজীবী মানুষের জয়গান'], importance: 'High Priority' },
-      { chapterNumber: 8, title: 'বিদ্রোহী — কাজী নজরুল ইসলাম', englishTitle: 'Bidrohi', coreConcepts: ['পরাধীনতার শৃঙ্খল ভাঙা', 'পৌরাণিক রূপক', 'চির উন্নত শির'], importance: 'Most Important (3-Star)' },
-      { chapterNumber: 9, title: 'তাহারেই পড়ে মনে — সুফিয়া কামাল', englishTitle: 'Taharei Pore Mone', coreConcepts: ['বসন্ত বন্দনা', 'ব্যক্তিগত বিষাদ', 'নাট্যধর্মী কবিতা'], importance: 'Most Important (3-Star)' },
-      { chapterNumber: 10, title: 'ফেব্রুয়ারি ১৯৬৯ — শামসুর রাহমান', englishTitle: 'February 1969', coreConcepts: ['গণঅভ্যুত্থান', 'একুশের অবিনাশী চেতনা', 'শহীদের রক্ত'], importance: 'High Priority' },
-      { chapterNumber: 11, title: 'লালসালু (উপন্যাস) — সৈয়দ ওয়ালীউল্লাহ', englishTitle: 'Lalsalu', coreConcepts: ['মজিদের শঠতা', 'ধর্মব্যবসা', 'জমিলার প্রতিবাদ'], importance: 'Most Important (3-Star)' },
-      { chapterNumber: 12, title: 'সিরাজউদ্দৌলা (নাটক) — সিকান্দার আবু জাফর', englishTitle: 'Sirajuddaula', coreConcepts: ['পলাশীর ট্র্যাজেডি', 'মীর জাফরের বিশ্বাসঘাতকতা', 'দেশপ্রেম'], importance: 'Most Important (3-Star)' }
+      // গদ্য (১২টি)
+      { chapterNumber: 1, title: 'বাঙ্গালার নব্য লেখকদিগের প্রতি নিবেদন — বঙ্কিমচন্দ্র চট্টোপাধ্যায়', englishTitle: 'Banglar Nobyo Lekhokder Proti Nibedon', coreConcepts: ['সত্যের উপাসনা', 'নিষ্কাম সাহিত্যসাধনা', 'অলংকার বর্জন'], importance: 'High Priority' },
+      { chapterNumber: 2, title: 'অপরিচিতা — রবীন্দ্রনাথ ঠাকুর', englishTitle: 'Oporichita', coreConcepts: ['যৌতুকবিরোধী চেতনা', 'কল্যাণীর ব্যক্তিত্ব', 'অনুপমের মনস্তত্ত্ব'], importance: 'Most Important (3-Star)' },
+      { chapterNumber: 3, title: 'বিলাসী — শরৎচন্দ্র চট্টোপাধ্যায়', englishTitle: 'Bilashi', coreConcepts: ['বর্ণবৈষম্য', 'অকৃত্রিম মানবপ্রেম', 'বিলাসীর আত্মোৎসর্গ'], importance: 'Most Important (3-Star)' },
+      { chapterNumber: 4, title: 'গৃহ — রোকেয়া সাখাওয়াত হোসেন', englishTitle: 'Griho', coreConcepts: ['নারীর গৃহহীনতা', 'অধিকার প্রতিষ্ঠা', 'স্বাবলম্বিতা'], importance: 'High Priority' },
+      { chapterNumber: 5, title: 'আহ্বান — বিভূতিভূষণ বন্দ্যোপাধ্যায়', englishTitle: 'Ahoban', coreConcepts: ['অনাবিল মাতৃস্নেহ', 'অসাম্প্রদায়িক চেতনা', 'মানবিক সম্পর্ক'], importance: 'High Priority' },
+      { chapterNumber: 6, title: 'আমার পথ — কাজী নজরুল ইসলাম', englishTitle: 'Amar Poth', coreConcepts: ['আত্মবিশ্বাস', 'সত্যের স্বরূপ', 'ভণ্ডামিবিরোধিতা'], importance: 'Most Important (3-Star)' },
+      { chapterNumber: 7, title: 'মানব-কল্যাণ — আবুল ফজল', englishTitle: 'Manob Kalyan', coreConcepts: ['প্রকৃত মানবকল্যাণ', 'আত্মমর্যাদা', 'মানবসম্ভাবনার বিকাশ'], importance: 'High Priority' },
+      { chapterNumber: 8, title: 'মাসি-পিসি — মানিক বন্দ্যোপাধ্যায়', englishTitle: 'Mashi-Pishi', coreConcepts: ['নারীর যৌথ প্রতিরোধ', 'দারিদ্র্যের বিরুদ্ধে সংগ্রাম', 'পিতৃতন্ত্রের প্রতিঘাত'], importance: 'Most Important (3-Star)' },
+      { chapterNumber: 9, title: 'বায়ান্নর দিনগুলো — শেখ মুজিবুর রহমান', englishTitle: 'Bayannor Dingulo', coreConcepts: ['ভাষা আন্দোলন', 'অনশন ধর্মঘট', 'বঙ্গবন্ধুর রাজনৈতিক ত্যাগ'], importance: 'Most Important (3-Star)' },
+      { chapterNumber: 10, title: 'রেইনকোট — আখতারুজ্জামান ইলিয়াস', englishTitle: 'Raincoat', coreConcepts: ['মুক্তিযুদ্ধের চেতনা', 'নুরুল হুদার মানসিক রূপান্তর', 'গেরিলা যুদ্ধ'], importance: 'Most Important (3-Star)' },
+      { chapterNumber: 11, title: 'মহাজাগতিক কিউরেটর — মুহম্মদ জাফর ইকবাল', englishTitle: 'Mohajagotik Curator', coreConcepts: ['পরিবেশ চেতনা', 'মানুষের আত্মঘাতী রূপ', 'পিঁপড়ার সুশৃঙ্খল সমাজ'], importance: 'High Priority' },
+      { chapterNumber: 12, title: 'নেকলেস — গী দ্য মোপাসাঁ', englishTitle: 'The Necklace', coreConcepts: ['অবাস্তব মোহ ও অহমিকা', 'দশ বছরের আত্মত্যাগ', 'মর্মান্তিক ট্র্যাজেডি'], importance: 'Most Important (3-Star)' },
+
+      // পদ্য (১২টি)
+      { chapterNumber: 13, title: 'বিভীষণের প্রতি মেঘনাদ — মাইকেল মধুসূদন দত্ত', englishTitle: 'Bibhishoner Proti Meghnad', coreConcepts: ['স্বদেশপ্রেম', 'বিশ্বাসঘাতকতার ধিক্কার', 'বীররস ও অমিত্রাক্ষর ছন্দ'], importance: 'Most Important (3-Star)' },
+      { chapterNumber: 14, title: 'সোনার তরী — রবীন্দ্রনাথ ঠাকুর', englishTitle: 'Sonar Tori', coreConcepts: ['সৃষ্টির অবিনশ্বরতা', 'মহাকালের দর্শন', 'স্রষ্টার নশ্বরতা'], importance: 'Most Important (3-Star)' },
+      { chapterNumber: 15, title: 'বিদ্রোহী — কাজী নজরুল ইসলাম', englishTitle: 'Bidrohi', coreConcepts: ['পরাধীনতার শৃঙ্খল ভাঙা', 'পৌরাণিক রূপক', 'চির উন্নত শির'], importance: 'Most Important (3-Star)' },
+      { chapterNumber: 16, title: 'প্রতিদান — জসীমউদ্দীন', englishTitle: 'Protidan', coreConcepts: ['ক্ষমা ও অহিংসা', 'শত্রুর প্রতি ভালোবাসা', 'পরোপকার'], importance: 'High Priority' },
+      { chapterNumber: 17, title: 'সুচেতনা — জীবনানন্দ দাশ', englishTitle: 'Suchetana', coreConcepts: ['ইতিহাস-চেতনা', 'সুচেতনার পৃথিবী', 'যুদ্ধোত্তর সংকটের উত্তরণ'], importance: 'High Priority' },
+      { chapterNumber: 18, title: 'তাহারেই পড়ে মনে — সুফিয়া কামাল', englishTitle: 'Taharei Pore Mone', coreConcepts: ['বসন্ত বন্দনা', 'ব্যক্তিগত বিষাদ', 'নাট্যধর্মী সংলাপ'], importance: 'Most Important (3-Star)' },
+      { chapterNumber: 19, title: 'পদ্মা — ফররুখ আহমদ', englishTitle: 'Padma', coreConcepts: ['বিধ্বংসী রূপ বনাম প্রাণসঞ্চার', 'সংগ্রামী চেতনা', 'বাংলার জীবনধারা'], importance: 'High Priority' },
+      { chapterNumber: 20, title: 'আঠারো বছর বয়স — সুকান্ত ভট্টাচার্য', englishTitle: 'Atharo Bochor Boyosh', coreConcepts: ['তারুণ্যের অদম্য সাহস', 'বিপ্লবের স্পর্ধা', 'আত্মোৎসর্গ'], importance: 'Most Important (3-Star)' },
+      { chapterNumber: 21, title: 'ফেব্রুয়ারি ১৯৬৯ — শামসুর রাহমান', englishTitle: 'February 1969', coreConcepts: ['গণঅভ্যুত্থান', 'একুশের অবিনাশী চেতনা', 'আসাদের রক্তমাখা শার্ট'], importance: 'Most Important (3-Star)' },
+      { chapterNumber: 22, title: 'আমি কিংবদন্তির কথা বলছি — আবু জাফর ওবায়দুল্লাহ', englishTitle: 'Ami Kingbodontir Kotha Bolchi', coreConcepts: ['পূর্বপুরুষের লড়াই', 'শ্রম ও ঐতিহ্য', 'মুক্তির কবিতা'], importance: 'High Priority' },
+      { chapterNumber: 23, title: 'নূরলদীনের কথা মনে পড়ে যায় — সৈয়দ শামসুল হক', englishTitle: 'Nuruldeener Kotha Mone Pore Jay', coreConcepts: ['কৃষক বিদ্রোহ', 'জাগো বাহে স্লোগান', 'মুক্তিযুদ্ধ ও প্রতিরোধ'], importance: 'Most Important (3-Star)' },
+      { chapterNumber: 24, title: 'ছবি — আবু হেনা মোস্তফা কামাল', englishTitle: 'Chhobi', coreConcepts: ['শহীদের রক্তঋণ', 'স্বাধীনতার প্রকৃত মূল্য', 'সুবিধাবাদের বিরুদ্ধে শ্লেষ'], importance: 'High Priority' }
     ]
   },
 

@@ -45,8 +45,8 @@ export const PrintBlueprintView: React.FC = () => {
           <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300">
             K&M Research Lab
           </span>
-          <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300">
-            Free-First AI Engine
+          <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-blue-100 text-blue-800 dark:bg-blue-950/60 dark:text-blue-300">
+            AI Research Engine
           </span>
         </div>
         <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">

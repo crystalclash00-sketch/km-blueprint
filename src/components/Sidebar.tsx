@@ -24,7 +24,8 @@ import {
   History,
   TrendingUp,
   Search,
-  BookMarked
+  BookMarked,
+  LogOut
 } from 'lucide-react';
 
 interface NavSection {
@@ -39,7 +40,7 @@ interface NavSection {
 }
 
 export const Sidebar: React.FC = () => {
-  const { activePage, setActivePage, currentUser, overallRemainingPercentage } = useApp();
+  const { activePage, setActivePage, currentUser, overallRemainingPercentage, logout } = useApp();
 
   const sections: NavSection[] = [
     {
@@ -80,7 +81,7 @@ export const Sidebar: React.FC = () => {
         { id: 'chemical_equation_center', label: 'রাসায়নিক সমীকরণ কেন্দ্র', icon: FlaskConical },
         { id: 'diagram_center', label: 'ডায়াগ্রাম ও চিহ্নিত চিত্র', icon: Layers },
         { id: 'english_center', label: 'English Learning Center', icon: Languages },
-        { id: 'bangla_center', label: 'বাংলা সাহিত্য ও ব্যাকরণ কেন্দ্র', icon: PenTool },
+        { id: 'bangla_center', label: 'বাংলা সাহিত্য ও ব্যাকরণ কেন্দ্র', icon: PenTool, badge: '২৪টি অধ্যায়' },
         { id: 'flashcards', label: 'ফ্ল্যাশ কার্ড (Flashcards)', icon: Bookmark },
         { id: 'revision_center', label: 'রিভিশন কেন্দ্র (Spaced Recall)', icon: History }
       ]
@@ -151,6 +152,17 @@ export const Sidebar: React.FC = () => {
           </div>
         );
       })}
+
+      {/* Logout Action */}
+      <div className="pt-4 mt-2 border-t border-slate-200 dark:border-slate-800">
+        <button
+          onClick={logout}
+          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition"
+        >
+          <LogOut className="w-4 h-4 shrink-0" />
+          <span>লগআউট (Log Out)</span>
+        </button>
+      </div>
     </aside>
   );
 };

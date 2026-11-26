@@ -104,6 +104,8 @@ interface AppContextType {
   setSelectedTopicId: (id: string) => void;
 
   // Accounts & Authentication
+  isAuthenticated: boolean;
+  logout: () => Promise<void>;
   accounts: UserAccount[];
   currentUser: UserAccount;
   isOwner: boolean;
@@ -159,6 +161,8 @@ interface AppContextType {
   setIsSubmitStudyModalOpen: (open: boolean) => void;
   isAccountModalOpen: boolean;
   setIsAccountModalOpen: (open: boolean) => void;
+  isMobileNavOpen: boolean;
+  setIsMobileNavOpen: (open: boolean) => void;
   isDarkMode: boolean;
   toggleDarkMode: () => void;
 
@@ -172,7 +176,10 @@ interface AppContextType {
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  // 1. Accounts & Registration Mode
+  // 1. Accounts, Authentication & Registration Mode
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
+    return localStorage.getItem('km_authenticated') === 'true';
+  });
   const [accounts, setAccounts] = useState<UserAccount[]>(() => loadAllAccounts());
   const [currentUserId, setCurrentUserIdState] = useState<string>(() => getActiveUserId());
   const currentUser = accounts.find(a => a.id === currentUserId) || accounts[0];
@@ -237,6 +244,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   // 6. UI Modals & Theme
   const [isSubmitStudyModalOpen, setIsSubmitStudyModalOpen] = useState(false);
   const [isAccountModalOpen, setIsAccountModalOpen] = useState(false);
+  const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
     return localStorage.getItem('km_theme') === 'dark';
   });
@@ -276,9 +284,25 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const target = accounts.find(a => a.id === userId);
     if (target) {
       switchUser(userId);
+      setIsAuthenticated(true);
+      localStorage.setItem('km_authenticated', 'true');
       return true;
     }
     return false;
+  };
+
+  // Logout action
+  const logout = async () => {
+    if (isSupabaseConfigured) {
+      try {
+        await supabase.auth.signOut();
+      } catch (err) {
+        console.warn('Supabase sign out error:', err);
+      }
+    }
+    localStorage.removeItem('km_authenticated');
+    setIsAuthenticated(false);
+    setActivePage('login');
   };
 
   // Real Email/Username + Password Auth
@@ -313,6 +337,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
             saveAccounts(updated);
           }
           switchUser(match.id);
+          setIsAuthenticated(true);
+          localStorage.setItem('km_authenticated', 'true');
           return { success: true };
         }
       } catch (err: any) {
@@ -328,6 +354,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
     if (matchedAccount) {
       switchUser(matchedAccount.id);
+      setIsAuthenticated(true);
+      localStorage.setItem('km_authenticated', 'true');
       return { success: true };
     }
 
@@ -411,6 +439,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
     // Switch to newly created student account
     switchUser(newStudentAccount.id);
+    setIsAuthenticated(true);
+    localStorage.setItem('km_authenticated', 'true');
     return { success: true };
   };
 
@@ -606,6 +636,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         accounts,
         currentUser,
         isOwner,
+        isAuthenticated,
+        logout,
         switchUser,
         loginWithPin,
         loginWithCredentials,
@@ -641,6 +673,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         setIsSubmitStudyModalOpen,
         isAccountModalOpen,
         setIsAccountModalOpen,
+        isMobileNavOpen,
+        setIsMobileNavOpen,
         isDarkMode,
         toggleDarkMode,
         totalConfirmedTopics: totalTopics,

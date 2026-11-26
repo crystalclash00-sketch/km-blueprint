@@ -8,7 +8,9 @@ import {
   PlusCircle,
   Shield,
   GraduationCap,
-  Sparkles
+  Sparkles,
+  Menu,
+  LogOut
 } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
@@ -17,6 +19,8 @@ export const Navbar: React.FC = () => {
     overallCompletionPercentage,
     setIsSubmitStudyModalOpen,
     setIsAccountModalOpen,
+    setIsMobileNavOpen,
+    logout,
     isDarkMode,
     toggleDarkMode,
     setActivePage
@@ -25,26 +29,36 @@ export const Navbar: React.FC = () => {
   return (
     <header className="sticky top-0 z-30 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
-        {/* Brand Logo & Name */}
-        <div
-          onClick={() => setActivePage('dashboard')}
-          className="flex items-center gap-3 cursor-pointer group"
-        >
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-violet-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20 group-hover:scale-105 transition-transform">
-            <span className="font-mono font-black text-lg">K&M</span>
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="font-extrabold text-slate-900 dark:text-white text-base sm:text-lg tracking-tight">
-                K&M Blueprint
-              </h1>
-              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300">
-                HSC Science
-              </span>
+        {/* Left Side: Mobile Hamburger + Brand Logo */}
+        <div className="flex items-center gap-2.5">
+          <button
+            onClick={() => setIsMobileNavOpen(true)}
+            aria-label="মেনু খুলুন"
+            className="md:hidden p-2 rounded-xl text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+          >
+            <Menu className="w-5 h-5" />
+          </button>
+
+          <div
+            onClick={() => setActivePage('dashboard')}
+            className="flex items-center gap-3 cursor-pointer group"
+          >
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-violet-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20 group-hover:scale-105 transition-transform">
+              <span className="font-mono font-black text-lg">K&M</span>
             </div>
-            <p className="text-[11px] text-slate-500 dark:text-slate-400 hidden sm:block">
-              Bangladesh's First All-in-One HSC Learning Platform
-            </p>
+            <div>
+              <div className="flex items-center gap-2">
+                <h1 className="font-extrabold text-slate-900 dark:text-white text-base sm:text-lg tracking-tight">
+                  K&M Blueprint
+                </h1>
+                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300">
+                  HSC Science
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 hidden sm:block">
+                Bangladesh's First All-in-One HSC Learning Platform
+              </p>
+            </div>
           </div>
         </div>
 
@@ -106,6 +120,16 @@ export const Navbar: React.FC = () => {
                 )}
               </div>
             </div>
+          </button>
+
+          {/* Logout Button */}
+          <button
+            onClick={logout}
+            title="লগআউট"
+            className="p-2 rounded-xl text-slate-500 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition flex items-center gap-1.5"
+          >
+            <LogOut className="w-4 h-4" />
+            <span className="text-xs font-bold hidden xl:inline">লগআউট</span>
           </button>
         </div>
       </div>

@@ -3,6 +3,7 @@ import { AppProvider, useApp } from './context/AppContext';
 import { Navbar } from './components/Navbar';
 import { Sidebar } from './components/Sidebar';
 import { MobileBottomNav } from './components/MobileBottomNav';
+import { MobileDrawerNav } from './components/MobileDrawerNav';
 import { AccountSwitcherModal } from './components/AccountSwitcherModal';
 import { SubmitStudyModal } from './components/SubmitStudyModal';
 import { DashboardView } from './components/DashboardView';
@@ -339,11 +340,10 @@ const MainContentRouter: React.FC = () => {
               প্ল্যাটফর্ম সেটিংস ও তথ্যাবলী (Settings & System Info)
             </h2>
             <div className="space-y-2 text-xs text-slate-600 dark:text-slate-400">
-              <div><strong>সফটওয়্যার নাম:</strong> K&M Blueprint</div>
-              <div><strong>ট্যাগলাইন:</strong> Bangladesh's First All-in-One HSC Learning Platform</div>
+              <div><strong>প্ল্যাটফর্ম:</strong> K&M Blueprint</div>
+              <div><strong>বর্ণনা:</strong> Bangladesh's Premier All-in-One HSC Learning Platform</div>
               <div><strong>সক্রিয় অ্যাকাউন্ট:</strong> {studentData.userId}</div>
-              <div><strong>টাইমজোন:</strong> Asia/Dhaka (UTC+6)</div>
-              <div><strong>হোস্টিং ও খরচ:</strong> ৳০/মাস (Cloudflare Pages + Supabase Free Architecture)</div>
+              <div><strong>ক্লাউড অবকাঠামো:</strong> Cloudflare Pages & Supabase Cloud</div>
             </div>
             <button
               onClick={() => setActivePage('dashboard')}
@@ -357,30 +357,44 @@ const MainContentRouter: React.FC = () => {
   }
 };
 
+const AppLayout: React.FC = () => {
+  const { isAuthenticated } = useApp();
+
+  // Clean login/entry gate before accessing the main dashboard or study views
+  if (!isAuthenticated) {
+    return <AuthView />;
+  }
+
+  return (
+    <div className="min-h-screen bg-[#f8fafc] dark:bg-[#090d16] text-slate-800 dark:text-slate-100 font-sans antialiased selection:bg-blue-600 selection:text-white flex flex-col">
+      {/* Navigation Bar */}
+      <Navbar />
+
+      {/* Center Workspace with Desktop Sidebar */}
+      <div className="flex-1 flex max-w-7xl w-full mx-auto">
+        <Sidebar />
+
+        {/* Main Dynamic Page Pane */}
+        <main className="flex-1 min-w-0 p-4 sm:p-6 lg:p-8 pb-20 md:pb-8">
+          <MainContentRouter />
+        </main>
+      </div>
+
+      {/* Mobile Navigation */}
+      <MobileBottomNav />
+      <MobileDrawerNav />
+
+      {/* Global Modals */}
+      <AccountSwitcherModal />
+      <SubmitStudyModal />
+    </div>
+  );
+};
+
 export default function App() {
   return (
     <AppProvider>
-      <div className="min-h-screen bg-[#f8fafc] dark:bg-[#090d16] text-slate-800 dark:text-slate-100 font-sans antialiased selection:bg-blue-600 selection:text-white flex flex-col">
-        {/* Navigation Bar */}
-        <Navbar />
-
-        {/* Center Workspace with Desktop Sidebar */}
-        <div className="flex-1 flex max-w-7xl w-full mx-auto">
-          <Sidebar />
-
-          {/* Main Dynamic Page Pane */}
-          <main className="flex-1 min-w-0 p-4 sm:p-6 lg:p-8 pb-20 md:pb-8">
-            <MainContentRouter />
-          </main>
-        </div>
-
-        {/* Mobile Bottom Navigation */}
-        <MobileBottomNav />
-
-        {/* Global Modals */}
-        <AccountSwitcherModal />
-        <SubmitStudyModal />
-      </div>
+      <AppLayout />
     </AppProvider>
   );
 }

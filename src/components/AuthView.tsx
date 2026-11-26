@@ -3,7 +3,7 @@ import { useApp } from '../context/AppContext';
 import { Lock, Mail, User, Shield, AlertCircle, CheckCircle2, ArrowRight, Eye, EyeOff, KeyRound } from 'lucide-react';
 
 export const AuthView: React.FC = () => {
-  const { isOwner, currentUser, loginWithCredentials, registerStudent, setActivePage, registrationMode } = useApp();
+  const { isOwner, currentUser, accounts, loginWithPin, loginWithCredentials, registerStudent, setActivePage, registrationMode } = useApp();
   const [isRegisterMode, setIsRegisterMode] = useState(false);
   
   // Login Form
@@ -101,19 +101,20 @@ export const AuthView: React.FC = () => {
   };
 
   return (
-    <div className="max-w-md w-full mx-auto my-8 p-6 sm:p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl space-y-6 animate-fade-in">
-      {/* Brand Header */}
-      <div className="text-center space-y-2">
-        <div className="inline-flex p-3 rounded-2xl bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 mb-1">
-          <Shield className="w-8 h-8" />
+    <div className="min-h-screen w-full bg-gradient-to-b from-slate-50 via-slate-100 to-slate-200 dark:from-[#090d16] dark:via-[#0c1220] dark:to-[#0f172a] flex items-center justify-center p-4">
+      <div className="max-w-md w-full my-8 p-6 sm:p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl space-y-6 animate-fade-in">
+        {/* Brand Header */}
+        <div className="text-center space-y-2">
+          <div className="inline-flex p-3 rounded-2xl bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 mb-1">
+            <Shield className="w-8 h-8" />
+          </div>
+          <h2 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+            K&M BLUEPRINT
+          </h2>
+          <p className="text-xs text-slate-500 dark:text-slate-400">
+            {isRegisterMode ? 'নতুন শিক্ষার্থী অ্যাকাউন্ট রেজিস্ট্রেশন' : 'সুরক্ষিত লগইন ও শিক্ষা পোর্টাল'}
+          </p>
         </div>
-        <h2 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
-          K&M BLUEPRINT
-        </h2>
-        <p className="text-xs text-slate-500 dark:text-slate-400">
-          {isRegisterMode ? 'নতুন শিক্ষার্থী অ্যাকাউন্ট রেজিস্ট্রেশন' : 'সুরক্ষিত লগইন ও শিক্ষা পোর্টাল'}
-        </p>
-      </div>
 
       {/* Mode Switcher Pills */}
       <div className="flex p-1 bg-slate-100 dark:bg-slate-800 rounded-2xl">
@@ -208,6 +209,38 @@ export const AuthView: React.FC = () => {
             {isLoading ? 'যাচাই করা হচ্ছে...' : 'লগইন করুন'}
             <ArrowRight className="w-4 h-4" />
           </button>
+
+          {/* Quick Select Profile for Existing Users */}
+          {accounts.length > 0 && (
+            <div className="pt-3 border-t border-slate-100 dark:border-slate-800 space-y-2">
+              <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider text-center">
+                নিবন্ধিত প্রোফাইল দিয়ে সরাসরি প্রবেশ করুন
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {accounts.slice(0, 4).map(acc => (
+                  <button
+                    key={acc.id}
+                    type="button"
+                    onClick={() => {
+                      loginWithPin(acc.id, '');
+                      setActivePage('dashboard');
+                    }}
+                    className="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-blue-500 dark:hover:border-blue-500 bg-slate-50/50 dark:bg-slate-800/50 text-left transition flex items-center gap-2 group"
+                  >
+                    <span className="text-base">{acc.avatar}</span>
+                    <div className="truncate">
+                      <div className="text-xs font-bold text-slate-800 dark:text-slate-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 truncate">
+                        {acc.displayName}
+                      </div>
+                      <div className="text-[10px] text-slate-400 capitalize">
+                        {acc.role}
+                      </div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
         </form>
       )}
 
@@ -342,6 +375,7 @@ export const AuthView: React.FC = () => {
           </button>
         </form>
       )}
+      </div>
     </div>
   );
 };

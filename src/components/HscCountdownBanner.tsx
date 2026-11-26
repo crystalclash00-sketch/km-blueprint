@@ -22,9 +22,6 @@ export const HscCountdownBanner: React.FC = () => {
               <Calendar className="w-3.5 h-3.5" />
               HSC {hscConfig.targetExamYear} Examination Countdown
             </span>
-            <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 font-medium">
-              Asia/Dhaka (UTC+6)
-            </span>
           </div>
 
           <h2 className="text-lg md:text-xl font-bold tracking-tight text-white flex items-center gap-2">

@@ -29,7 +29,7 @@ export default {
         }
       },
       fontFamily: {
-        sans: ['Hind Siliguri', 'Inter', 'sans-serif'],
+        sans: ['Hind Siliguri', 'Noto Sans Bengali', 'Inter', 'sans-serif'],
       },
       boxShadow: {
         'duo-green': '0 4px 0 #46a302',
