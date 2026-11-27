@@ -64,13 +64,6 @@ export const sidebarNavSections: NavSection[] = [
       { id: 'print_blueprint', label: 'Print the Blueprint (AI)', icon: Sparkles, badge: 'AI' },
       { id: 'hsc_date_monitor', label: 'HSC তারিখ মনিটর', icon: Clock }
     ]
-  },
-  {
-    title: 'প্রশাসন ও সেটিংস',
-    items: [
-      { id: 'owner_panel', label: 'মাস্টার কন্ট্রোল প্যানেল', icon: Shield, ownerOnly: true },
-      { id: 'settings', label: 'প্ল্যাটফর্ম সেটিংস', icon: Settings }
-    ]
   }
 ];
 

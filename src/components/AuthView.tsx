@@ -18,7 +18,6 @@ export const AuthView: React.FC = () => {
   const [regEmail, setRegEmail] = useState('');
   const [regPassword, setRegPassword] = useState('');
   const [regConfirmPassword, setRegConfirmPassword] = useState('');
-  const [regInviteCode, setRegInviteCode] = useState('');
   const [showRegPassword, setShowRegPassword] = useState(false);
 
   // Status
@@ -74,19 +73,13 @@ export const AuthView: React.FC = () => {
       return;
     }
 
-    if (registrationMode === 'invite_only' && !regInviteCode.trim()) {
-      setErrorMsg('ইনভাইটেশন কোড প্রদান করা আবশ্যক।');
-      return;
-    }
-
     setIsLoading(true);
     const res = await registerStudent({
       fullName: regFullName.trim(),
       displayName: regDisplayName.trim(),
       username: regUsername.trim().toLowerCase(),
       email: regEmail.trim().toLowerCase(),
-      password: regPassword,
-      inviteCode: regInviteCode.trim()
+      password: regPassword
     });
     setIsLoading(false);
 
@@ -310,23 +303,6 @@ export const AuthView: React.FC = () => {
               />
             </div>
           </div>
-
-          {registrationMode === 'invite_only' && (
-            <div>
-              <label className="block text-[11px] font-bold text-blue-600 dark:text-blue-400 mb-1 flex items-center gap-1">
-                <KeyRound className="w-3.5 h-3.5" />
-                অ্যাডমিন ইনভাইটেশন কোড (Invitation Code) *
-              </label>
-              <input
-                type="text"
-                required
-                value={regInviteCode}
-                onChange={e => setRegInviteCode(e.target.value)}
-                placeholder="এডমিনের দেওয়া ইনভাইট কোড লিখুন"
-                className="w-full px-3 py-2 rounded-xl border border-blue-300 dark:border-blue-700 bg-blue-50/50 dark:bg-blue-950/30 text-xs font-mono text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-          )}
 
           <div className="p-3 rounded-2xl bg-slate-100 dark:bg-slate-800 text-[10px] text-slate-500 dark:text-slate-400 space-y-1">
             <div>• অ্যাকাউন্ট তৈরির সাথে সাথেই আপনার ব্যক্তিগত ক্লাউড প্রোফাইল সক্রিয় হবে।</div>

@@ -138,6 +138,7 @@ interface AppContextType {
   updateHscConfig: (updates: Partial<HscExamConfig>) => void;
   researchNewTopic: (topicTitle: string) => Promise<void>;
   publishResearch: (researchId: string) => void;
+  deleteResearchItem: (researchId: string) => void;
 
   // Student Private Records (Strictly Isolated)
   studentData: StudentPrivateData;
@@ -186,7 +187,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const isOwner = currentUser.role === 'owner';
 
   const [registrationMode, setRegistrationModeState] = useState<'open' | 'invite_only' | 'disabled'>(() => {
-    return (localStorage.getItem('km_registration_mode') as any) || 'invite_only';
+    return (localStorage.getItem('km_registration_mode') as any) || 'open';
   });
 
   const setRegistrationMode = (mode: 'open' | 'invite_only' | 'disabled') => {
@@ -401,14 +402,6 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     password: string;
     inviteCode?: string;
   }): Promise<{ success: boolean; error?: string }> => {
-    // Check invite code if invite_only
-    if (registrationMode === 'invite_only') {
-      const validInvite = invitations.find(i => i.code.toUpperCase() === (info.inviteCode || '').toUpperCase() && !i.isUsed);
-      if (!validInvite) {
-        return { success: false, error: 'ইনভাইটেশন কোডটি সঠিক নয় বা ইতিমধ্যে ব্যবহৃত হয়েছে।' };
-      }
-    }
-
     // Check duplicate username
     if (accounts.some(a => a.username.toLowerCase() === info.username.toLowerCase())) {
       return { success: false, error: 'এই ইউজারনেমটি ইতিমধ্যে নেওয়া হয়েছে। অন্য একটি নির্বাচন করুন।' };
@@ -636,6 +629,12 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     saveGlobalData({ researchItems: updated });
   };
 
+  const deleteResearchItem = (researchId: string) => {
+    const updated = globalData.researchItems.filter(item => item.id !== researchId);
+    setGlobalDataState(prev => ({ ...prev, researchItems: updated }));
+    saveGlobalData({ researchItems: updated });
+  };
+
   // Real-time Syllabus Progress Math
   let totalTopics = 0;
   for (const sub of globalData.curriculum) {
@@ -686,6 +685,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         updateHscConfig,
         researchNewTopic,
         publishResearch,
+        deleteResearchItem,
         studentData,
         updateTopicStatus,
         confirmTopicCompletion,

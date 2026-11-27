@@ -22,7 +22,6 @@ import { StudyCoachView } from './components/StudyCoachView';
 import { EnglishCenterView } from './components/EnglishCenterView';
 import { BanglaCenterView } from './components/BanglaCenterView';
 import { TextbookDiscoveryView } from './components/TextbookDiscoveryView';
-import { OwnerPanel } from './components/OwnerPanel';
 import { RoutineCalendarView } from './components/RoutineCalendarView';
 import { AuthView } from './components/AuthView';
 import { QuestionBankView } from './components/QuestionBankView';
@@ -115,9 +114,12 @@ const MainContentRouter: React.FC = () => {
       return <TextbookDiscoveryView />;
 
     case 'owner_panel':
-      return <OwnerPanel />;
-
-    case 'question_bank':
+    case 'settings':
+    case 'notifications':
+    case 'achievements':
+    case 'statistics':
+    default:
+      return <DashboardView />;
     case 'previous_board_papers':
     case 'cq_practice':
       return <QuestionBankView />;
@@ -290,32 +292,8 @@ const MainContentRouter: React.FC = () => {
     case 'landing':
       return <AuthView />;
 
-    case 'settings':
-    case 'notifications':
-    case 'achievements':
-    case 'statistics':
     default:
-      return (
-        <div className="space-y-6 pb-12 animate-fade-in">
-          <div className="bg-white dark:bg-slate-900 rounded-3xl p-8 border border-slate-200 dark:border-slate-800 space-y-4">
-            <h2 className="text-xl font-bold text-slate-900 dark:text-white">
-              প্ল্যাটফর্ম সেটিংস ও তথ্যাবলী (Settings & System Info)
-            </h2>
-            <div className="space-y-2 text-xs text-slate-600 dark:text-slate-400">
-              <div><strong>প্ল্যাটফর্ম:</strong> K&M Blueprint</div>
-              <div><strong>বর্ণনা:</strong> Bangladesh's Premier All-in-One HSC Learning Platform</div>
-              <div><strong>সক্রিয় অ্যাকাউন্ট:</strong> {studentData.userId}</div>
-              <div><strong>ক্লাউড অবকাঠামো:</strong> Cloudflare Pages & Supabase Cloud</div>
-            </div>
-            <button
-              onClick={() => setActivePage('dashboard')}
-              className="px-4 py-2 text-xs font-bold text-white bg-blue-600 rounded-xl"
-            >
-              ড্যাশবোর্ডে ফিরে যান
-            </button>
-          </div>
-        </div>
-      );
+      return <DashboardView />;
   }
 };
 

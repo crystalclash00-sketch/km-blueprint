@@ -198,7 +198,25 @@ export const loadGlobalData = (): GlobalKmData => {
     if (curRaw) curriculum = JSON.parse(curRaw);
 
     const resRaw = localStorage.getItem('km_global_research');
-    if (resRaw) researchItems = JSON.parse(resRaw);
+    if (resRaw) {
+      try {
+        const parsed: BlueprintResearchItem[] = JSON.parse(resRaw);
+        researchItems = parsed
+          .filter(item => {
+            const t = (item.topicTitle || '').toLowerCase();
+            const l = (item.generatedBanglaLesson || '').toLowerCase();
+            return !t.includes('mitocondrea') && !l.includes('mitocondrea');
+          })
+          .map(item => ({
+            ...item,
+            topicTitle: (item.topicTitle || '').replace(/mitocondrea/gi, 'মাইটোকন্ড্রিয়া'),
+            generatedBanglaLesson: (item.generatedBanglaLesson || '').replace(/mitocondrea/gi, 'মাইটোকন্ড্রিয়া')
+          }));
+        localStorage.setItem('km_global_research', JSON.stringify(researchItems));
+      } catch (err) {
+        console.warn('Error parsing or cleansing research items:', err);
+      }
+    }
 
     const keysRaw = localStorage.getItem('km_global_apikeys');
     if (keysRaw) apiKeys = JSON.parse(keysRaw);
