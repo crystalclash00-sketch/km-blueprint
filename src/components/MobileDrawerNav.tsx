@@ -9,22 +9,12 @@ import {
   Sparkles,
   Bot,
   HelpCircle,
-  FileText,
-  Bookmark,
   Award,
-  Video,
   Settings,
   Shield,
   Layers,
-  Atom,
-  FlaskConical,
-  Languages,
-  PenTool,
   Calendar,
   History,
-  TrendingUp,
-  Search,
-  BookMarked,
   X,
   LogOut,
   Moon,
@@ -44,12 +34,11 @@ interface NavSection {
 
 export const mobileNavSections: NavSection[] = [
   {
-    title: 'মূল ড্যাশবোর্ড ও সিলেবাস',
+    title: 'মূল ড্যাশবোর্ড ও পাঠ্যক্রম',
     items: [
       { id: 'dashboard', label: 'ড্যাশবোর্ড (Dashboard)', icon: LayoutDashboard },
-      { id: 'hsc_library', label: 'HSC লাইব্রেরি (Curriculum)', icon: BookOpen },
-      { id: 'remaining_syllabus', label: 'বাকি সিলেবাস (Remaining)', icon: PieChart },
-      { id: 'syllabus_progress', label: 'সিলেবাস অগ্রগতি (Progress)', icon: TrendingUp }
+      { id: 'hsc_library', label: 'HSC লাইব্রেরি ও বিষয়ভিত্তিক অধ্যায়', icon: BookOpen },
+      { id: 'remaining_syllabus', label: 'বাকি সিলেবাস ও সার্বিক অগ্রগতি', icon: PieChart }
     ]
   },
   {
@@ -58,42 +47,25 @@ export const mobileNavSections: NavSection[] = [
       { id: 'study_now', label: 'Study Now (পড়া শুরু করুন)', icon: Sparkles },
       { id: 'submit_study', label: 'আজকের পড়াশোনা জমা দিন', icon: CheckCircle },
       { id: 'submission_history', label: 'পড়াশোনা জমার ইতিহাস', icon: History },
-      { id: 'study_coach', label: 'স্টাডি কোচ (Study Coach)', icon: Bot },
       { id: 'study_timer', label: 'স্টাডি টাইমার (Pomodoro)', icon: Clock },
+      { id: 'study_coach', label: 'স্টাডি কোচ (Study Coach)', icon: Bot },
       { id: 'routine_calendar', label: 'রুটিন ও ক্যালেন্ডার', icon: Calendar },
       { id: 'missions', label: 'আজকের মিশন (Missions)', icon: Award }
     ]
   },
   {
-    title: 'পরীক্ষা ও প্রশ্ন ব্যাংক',
+    title: 'প্রশ্ন ব্যাংক ও পরীক্ষা',
     items: [
+      { id: 'question_bank', label: 'প্রশ্ন ব্যাংক (MCQ ও CQ)', icon: HelpCircle, badge: '২০১০-২০২৬' },
       { id: 'mcq_exam_center', label: 'MCQ পরীক্ষা কেন্দ্র', icon: Layers, badge: 'Timed' },
-      { id: 'question_bank', label: 'প্রশ্ন ব্যাংক (Question Bank)', icon: HelpCircle },
-      { id: 'exam_history', label: 'পরীক্ষার ফলাফল ও ভুল বিশ্লেষণ', icon: History },
-      { id: 'cq_practice', label: 'CQ সৃজনশীল অনুশীলন', icon: FileText },
-      { id: 'previous_board_papers', label: 'বিগত বোর্ড প্রশ্নপত্র', icon: BookMarked }
-    ]
-  },
-  {
-    title: 'বিশেষায়িত জ্ঞান কেন্দ্র',
-    items: [
-      { id: 'bangla_center', label: 'বাংলা সাহিত্য ও ব্যাকরণ কেন্দ্র', icon: PenTool, badge: '২৪টি অধ্যায়' },
-      { id: 'english_center', label: 'English Learning Center', icon: Languages },
-      { id: 'formula_center', label: 'সূত্র ভাণ্ডার (Formula Center)', icon: Atom },
-      { id: 'chemical_equation_center', label: 'রাসায়নিক সমীকরণ কেন্দ্র', icon: FlaskConical },
-      { id: 'diagram_center', label: 'ডায়াগ্রাম ও চিহ্নিত চিত্র', icon: Layers },
-      { id: 'flashcards', label: 'ফ্ল্যাশ কার্ড (Flashcards)', icon: Bookmark },
-      { id: 'revision_center', label: 'রিভিশন কেন্দ্র (Spaced Recall)', icon: History }
+      { id: 'exam_results', label: 'পরীক্ষার ফলাফল ও ভুল বিশ্লেষণ', icon: History }
     ]
   },
   {
     title: 'এআই গবেষণা ও পর্যবেক্ষণ',
     items: [
       { id: 'print_blueprint', label: 'Print the Blueprint (AI)', icon: Sparkles, badge: 'AI' },
-      { id: 'chapter_builder', label: 'অটোমেটিক চ্যাপ্টার বিল্ডার', icon: Layers },
-      { id: 'textbook_discovery', label: 'পাঠ্যবই অনুসন্ধান (Textbooks)', icon: Search },
-      { id: 'hsc_date_monitor', label: 'HSC তারিখ মনিটর (Date Monitor)', icon: Clock },
-      { id: 'educational_videos', label: 'ভিডিও লাইব্রেরি (Lectures)', icon: Video }
+      { id: 'hsc_date_monitor', label: 'HSC তারিখ মনিটর', icon: Clock }
     ]
   },
   {
@@ -113,6 +85,7 @@ export const MobileDrawerNav: React.FC = () => {
     isOwner,
     isMobileNavOpen,
     setIsMobileNavOpen,
+    setIsSubmitStudyModalOpen,
     logout,
     isDarkMode,
     toggleDarkMode
@@ -121,37 +94,43 @@ export const MobileDrawerNav: React.FC = () => {
   if (!isMobileNavOpen) return null;
 
   const handleNavigate = (page: NavigationPage) => {
+    if (page === 'submit_study') {
+      setIsMobileNavOpen(false);
+      setIsSubmitStudyModalOpen(true);
+      return;
+    }
     setActivePage(page);
     setIsMobileNavOpen(false);
   };
 
   return (
-    <div className="fixed inset-0 z-50 md:hidden flex animate-fade-in">
+    <div className="fixed inset-0 z-50 md:hidden flex justify-end animate-fade-in">
       {/* Backdrop */}
       <div
         onClick={() => setIsMobileNavOpen(false)}
         className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm"
       />
 
-      {/* Drawer Panel */}
-      <div className="relative w-4/5 max-w-xs bg-white dark:bg-slate-900 h-full shadow-2xl flex flex-col z-10 border-r border-slate-200 dark:border-slate-800">
+      {/* Drawer Panel Sliding in from Right (Ergonomic for right-handed use) */}
+      <div className="relative w-4/5 max-w-xs bg-white dark:bg-slate-900 h-full shadow-2xl flex flex-col z-10 border-l border-slate-200 dark:border-slate-800 animate-slide-in-right">
         {/* Header */}
         <div className="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white font-mono font-black text-sm shadow">
               K&M
             </div>
-            <div>
-              <div className="font-extrabold text-sm text-slate-900 dark:text-white">
-                K&M Blueprint
+            <div className="max-w-[170px] truncate">
+              <div className="font-extrabold text-sm text-slate-900 dark:text-white truncate">
+                {currentUser.displayName}
               </div>
-              <div className="text-[10px] text-slate-500">
-                {currentUser.displayName} ({currentUser.role === 'owner' ? 'Owner' : 'Student'})
+              <div className="text-[10px] text-slate-500 font-mono truncate">
+                {currentUser.email || 'student@kmblueprint.bd'}
               </div>
             </div>
           </div>
           <button
             onClick={() => setIsMobileNavOpen(false)}
+            aria-label="মেনু বন্ধ করুন"
             className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800"
           >
             <X className="w-5 h-5" />

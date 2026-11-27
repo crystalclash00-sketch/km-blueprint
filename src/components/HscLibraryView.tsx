@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
 import { Subject, Paper, Chapter } from '../types';
 import {
@@ -9,13 +9,16 @@ import {
   Clock,
   Layers,
   Award,
-  ArrowRight
+  ArrowRight,
+  BookMarked
 } from 'lucide-react';
 
 export const HscLibraryView: React.FC = () => {
   const {
     curriculum,
     studentData,
+    selectedSubjectId,
+    selectedPaperNumber,
     setSelectedSubjectId,
     setSelectedPaperNumber,
     setSelectedChapterId,
@@ -23,8 +26,21 @@ export const HscLibraryView: React.FC = () => {
     setActivePage
   } = useApp();
 
-  const [activeSubjectTab, setActiveSubjectTab] = useState<string>('phy');
-  const [activePaperNum, setActivePaperNum] = useState<1 | 2>(1);
+  const [activeSubjectTab, setActiveSubjectTab] = useState<string>(selectedSubjectId || 'ban');
+  const [activePaperNum, setActivePaperNum] = useState<1 | 2>(selectedPaperNumber || 1);
+
+  // Keep state synchronized with global context
+  useEffect(() => {
+    if (selectedSubjectId) {
+      setActiveSubjectTab(selectedSubjectId);
+    }
+  }, [selectedSubjectId]);
+
+  useEffect(() => {
+    if (selectedPaperNumber) {
+      setActivePaperNum(selectedPaperNumber);
+    }
+  }, [selectedPaperNumber]);
 
   const currentSubject = curriculum.find(s => s.id === activeSubjectTab) || curriculum[0];
   const currentPaper = currentSubject.papers.find(p => p.paperNumber === activePaperNum) || currentSubject.papers[0];
@@ -63,6 +79,7 @@ export const HscLibraryView: React.FC = () => {
               onClick={() => {
                 setActiveSubjectTab(subject.id);
                 setActivePaperNum(1);
+                setSelectedSubjectId(subject.id);
               }}
               className={`px-4 py-2.5 rounded-2xl text-xs font-bold shrink-0 transition flex items-center gap-2 ${
                 isActive
@@ -86,7 +103,10 @@ export const HscLibraryView: React.FC = () => {
         {currentSubject.papers.map(paper => (
           <button
             key={paper.id}
-            onClick={() => setActivePaperNum(paper.paperNumber)}
+            onClick={() => {
+              setActivePaperNum(paper.paperNumber);
+              setSelectedPaperNumber(paper.paperNumber);
+            }}
             className={`px-4 py-2 rounded-xl text-xs font-bold transition ${
               activePaperNum === paper.paperNumber
                 ? 'bg-indigo-600 text-white shadow-sm'
@@ -97,6 +117,30 @@ export const HscLibraryView: React.FC = () => {
           </button>
         ))}
       </div>
+
+      {/* Bangla 1st Paper Full Syllabus Banner */}
+      {currentSubject.id === 'ban' && activePaperNum === 1 && (
+        <div className="bg-gradient-to-r from-emerald-600 to-teal-700 text-white rounded-3xl p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm animate-fade-in">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-white/20">
+                সাহিত্যপাঠ সম্পূর্ণ সিলেবাস
+              </span>
+              <span className="text-xs font-mono">১২ গদ্য + ১২ পদ্য (মোট ২৪টি অধ্যায়)</span>
+            </div>
+            <p className="text-xs text-emerald-100 max-w-xl">
+              বঙ্কিমচন্দ্র, রবীন্দ্রনাথ, কাজী নজরুল ইসলাম, মানিক বন্দ্যোপাধ্যায় সহ সকল সাহিত্যিকের পূর্ণাঙ্গ পাঠ, মূলভাব, গুরুত্বপূর্ণ পঙক্তি ও পরীক্ষার ফোকাস।
+            </p>
+          </div>
+          <button
+            onClick={() => setActivePage('bangla_center')}
+            className="px-4 py-2 rounded-xl text-xs font-bold bg-white text-emerald-900 hover:bg-emerald-50 transition flex items-center gap-1.5 shrink-0"
+          >
+            <BookMarked className="w-4 h-4" />
+            <span>সাহিত্যপাঠ কেন্দ্র খুলুন</span>
+          </button>
+        </div>
+      )}
 
       {/* Chapters Grid */}
       <div className="space-y-4">

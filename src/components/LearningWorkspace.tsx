@@ -11,9 +11,16 @@ import {
   Atom,
   HelpCircle,
   FileText,
-  Bookmark
+  Bookmark,
+  ImageIcon
 } from 'lucide-react';
 import { startNewExamAttempt } from '../services/examService';
+import {
+  ChloroplastSvg,
+  VectorResolutionSvg,
+  BenzeneNitrationSvg,
+  IctLogicGatesSvg
+} from './InlineSubjectVisuals';
 
 export const LearningWorkspace: React.FC = () => {
   const {
@@ -32,7 +39,7 @@ export const LearningWorkspace: React.FC = () => {
     setActivePage
   } = useApp();
 
-  const [activeTab, setActiveTab] = useState<'lesson' | 'definitions' | 'formulas' | 'examples' | 'notes'>('lesson');
+  const [activeTab, setActiveTab] = useState<'lesson' | 'definitions' | 'formulas' | 'visuals' | 'notes'>('lesson');
   const [personalNoteText, setPersonalNoteText] = useState<string>(() => {
     return studentData.personalNotes[selectedChapterId] || '';
   });
@@ -139,10 +146,10 @@ export const LearningWorkspace: React.FC = () => {
         {/* Left Column: Lesson Tabs & Core Study (2 cols) */}
         <div className="lg:col-span-2 space-y-5">
           {/* Workspace Tabs */}
-          <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800/60 p-1.5 rounded-2xl border border-slate-200 dark:border-slate-700">
+          <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800/60 p-1.5 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-x-auto scrollbar-none">
             <button
               onClick={() => setActiveTab('lesson')}
-              className={`flex-1 py-2 text-xs font-bold rounded-xl transition ${
+              className={`flex-1 py-2 px-3 text-xs font-bold rounded-xl whitespace-nowrap transition ${
                 activeTab === 'lesson'
                   ? 'bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 shadow-sm'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
@@ -151,8 +158,19 @@ export const LearningWorkspace: React.FC = () => {
               মূল লেকচার (Lesson)
             </button>
             <button
+              onClick={() => setActiveTab('visuals')}
+              className={`flex-1 py-2 px-3 text-xs font-bold rounded-xl whitespace-nowrap transition flex items-center justify-center gap-1.5 ${
+                activeTab === 'visuals'
+                  ? 'bg-white dark:bg-slate-900 text-purple-600 dark:text-purple-400 shadow-sm'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
+              }`}
+            >
+              <ImageIcon className="w-3.5 h-3.5" />
+              <span>ডায়াগ্রাম ও চিত্র (Visuals)</span>
+            </button>
+            <button
               onClick={() => setActiveTab('definitions')}
-              className={`flex-1 py-2 text-xs font-bold rounded-xl transition ${
+              className={`flex-1 py-2 px-3 text-xs font-bold rounded-xl whitespace-nowrap transition ${
                 activeTab === 'definitions'
                   ? 'bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 shadow-sm'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
@@ -162,28 +180,55 @@ export const LearningWorkspace: React.FC = () => {
             </button>
             <button
               onClick={() => setActiveTab('formulas')}
-              className={`flex-1 py-2 text-xs font-bold rounded-xl transition ${
+              className={`flex-1 py-2 px-3 text-xs font-bold rounded-xl whitespace-nowrap transition ${
                 activeTab === 'formulas'
                   ? 'bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 shadow-sm'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
               }`}
             >
-              সূত্র ও একক
+              সূত্র ও নিয়মাবলী
             </button>
             <button
               onClick={() => setActiveTab('notes')}
-              className={`flex-1 py-2 text-xs font-bold rounded-xl transition ${
+              className={`flex-1 py-2 px-3 text-xs font-bold rounded-xl whitespace-nowrap transition ${
                 activeTab === 'notes'
                   ? 'bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 shadow-sm'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
               }`}
             >
-              ব্যক্তিগত নোট (Private)
+              ব্যক্তিগত নোট
             </button>
           </div>
 
           {/* Active Tab View */}
           <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-sm">
+            {activeTab === 'visuals' && (
+              <div className="space-y-6 animate-fade-in">
+                <div>
+                  <h4 className="text-sm font-bold text-slate-900 dark:text-white">
+                    ইনলাইন চিহ্নিত চিত্র ও ডায়াগ্রাম ভাণ্ডার (Interactive Diagrams)
+                  </h4>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    বোর্ড স্ট্যান্ডার্ড চিহ্নিত চিত্র, কৌশল ও ইন্টারঅ্যাক্টিভ অ্যানিমেশন
+                  </p>
+                </div>
+
+                {/* Subject tailored visual */}
+                {currentSubject.id === 'bio' && <ChloroplastSvg />}
+                {currentSubject.id === 'phy' && <VectorResolutionSvg />}
+                {currentSubject.id === 'chem' && <BenzeneNitrationSvg />}
+                {currentSubject.id === 'ict' && <IctLogicGatesSvg />}
+
+                {/* If subject is not one of above or user wants to browse other standard diagrams */}
+                {currentSubject.id !== 'bio' && currentSubject.id !== 'phy' && currentSubject.id !== 'chem' && currentSubject.id !== 'ict' && (
+                  <div className="space-y-4">
+                    <ChloroplastSvg />
+                    <VectorResolutionSvg />
+                  </div>
+                )}
+              </div>
+            )}
+
             {activeTab === 'lesson' && (
               <div className="space-y-5">
                 <div className="border-b border-slate-100 dark:border-slate-800 pb-4">
@@ -254,7 +299,7 @@ export const LearningWorkspace: React.FC = () => {
                   </div>
                 ) : (
                   <div className="text-xs text-slate-500 py-6 text-center">
-                    এই অধ্যায়ের সংজ্ঞাসমূহ প্রমিত সিলেবাস অনুযায়ী প্রস্তুত করা হচ্ছে।
+                    এই অধ্যায়ের সংজ্ঞাসমূহ প্রমিত সিলেবাস অনুযায়ী প্রস্তুত করা হয়েছে।
                   </div>
                 )}
               </div>
@@ -263,16 +308,110 @@ export const LearningWorkspace: React.FC = () => {
             {activeTab === 'formulas' && (
               <div className="space-y-4">
                 <h4 className="text-sm font-bold text-slate-900 dark:text-white mb-2">
-                  সম্পর্কিত গাণিতিক সূত্রাবলী ও এসআই একক:
+                  সম্পর্কিত গাণিতিক সূত্রাবলী ও নিয়মাবলী:
                 </h4>
-                <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3">
-                  <div className="text-sm font-mono font-bold text-indigo-600 dark:text-indigo-400">
-                    R = √(P² + Q² + 2PQ cos α)
+                {currentSubject.id === 'phy' && (
+                  <div className="space-y-3">
+                    <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-1">
+                      <div className="text-sm font-mono font-bold text-indigo-600 dark:text-indigo-400">
+                        R = √(P² + Q² + 2PQ cos α)
+                      </div>
+                      <div className="text-xs text-slate-600 dark:text-slate-300">
+                        P ও Q বলদ্বয়ের লব্ধির মান। α হলো মধ্যবর্তী কোণ।
+                      </div>
+                    </div>
+                    <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-1">
+                      <div className="text-sm font-mono font-bold text-indigo-600 dark:text-indigo-400">
+                        tan θ = (Q sin α) / (P + Q cos α)
+                      </div>
+                      <div className="text-xs text-slate-600 dark:text-slate-300">
+                        লব্ধি ভেক্টর R এর দিক বা কোণ (P এর সাপেক্ষে)।
+                      </div>
+                    </div>
+                    <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-1">
+                      <div className="text-sm font-mono font-bold text-indigo-600 dark:text-indigo-400">
+                        tan θ = v² / (r · g)
+                      </div>
+                      <div className="text-xs text-slate-600 dark:text-slate-300">
+                        রাস্তার ব্যাংকিং কোণের আদর্শ সমীকরণ।
+                      </div>
+                    </div>
                   </div>
-                  <div className="text-xs text-slate-600 dark:text-slate-300">
-                    P ও Q বলদ্বয়ের লব্ধির মান। α হলো মধ্যবর্তী কোণ।
+                )}
+
+                {currentSubject.id === 'chem' && (
+                  <div className="space-y-3">
+                    <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-1">
+                      <div className="text-sm font-mono font-bold text-indigo-600 dark:text-indigo-400">
+                        PV = nRT = (w / M) · RT
+                      </div>
+                      <div className="text-xs text-slate-600 dark:text-slate-300">
+                        আদর্শ গ্যাস সমীকরণ। R = 0.0821 L·atm·mol⁻¹·K⁻¹ অথবা 8.314 J·mol⁻¹·K⁻¹।
+                      </div>
+                    </div>
+                    <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-1">
+                      <div className="text-sm font-mono font-bold text-indigo-600 dark:text-indigo-400">
+                        pH = pKa + log([লবণ] / [এসিড])
+                      </div>
+                      <div className="text-xs text-slate-600 dark:text-slate-300">
+                        হেন্ডারসন-হ্যাসেলবালখ বাফার সমীকরণ।
+                      </div>
+                    </div>
                   </div>
-                </div>
+                )}
+
+                {currentSubject.id === 'hmath' && (
+                  <div className="space-y-3">
+                    <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-1">
+                      <div className="text-sm font-mono font-bold text-indigo-600 dark:text-indigo-400">
+                        A⁻¹ = (1 / det A) · adj(A)
+                      </div>
+                      <div className="text-xs text-slate-600 dark:text-slate-300">
+                        বর্গ ম্যাট্রিক্সের বিপরীত ম্যাট্রিক্স নির্ণয়ের সূত্র।
+                      </div>
+                    </div>
+                    <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-1">
+                      <div className="text-sm font-mono font-bold text-indigo-600 dark:text-indigo-400">
+                        y² = 4ax  →  উপকেন্দ্র (a, 0), দিকাক্ষ: x = -a
+                      </div>
+                      <div className="text-xs text-slate-600 dark:text-slate-300">
+                        পরাবৃত্তের প্রমিত রূপ ও জ্যামিতিক বৈশিষ্ট্য।
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {currentSubject.id === 'ict' && (
+                  <div className="space-y-3">
+                    <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-1">
+                      <div className="text-sm font-mono font-bold text-indigo-600 dark:text-indigo-400">
+                        (A + B)′ = A′ · B′  এবং  (A · B)′ = A′ + B′
+                      </div>
+                      <div className="text-xs text-slate-600 dark:text-slate-300">
+                        ডি মরগ্যানের উপপাদ্য (De Morgan\'s Laws)।
+                      </div>
+                    </div>
+                    <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-1">
+                      <div className="text-sm font-mono font-bold text-indigo-600 dark:text-indigo-400">
+                        ২-এর পরিপূরক = ১-এর পরিপূরক + ১
+                      </div>
+                      <div className="text-xs text-slate-600 dark:text-slate-300">
+                        চিহ্নযুক্ত বাইনারি সংখ্যা গঠনের গাণিতিক নিয়ম।
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {currentSubject.id !== 'phy' && currentSubject.id !== 'chem' && currentSubject.id !== 'hmath' && currentSubject.id !== 'ict' && (
+                  <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-1">
+                    <div className="text-sm font-bold text-indigo-600 dark:text-indigo-400">
+                      বোর্ড পরীক্ষার গুরুত্বপূর্ণ মূলনীতি ও শর্টকাট
+                    </div>
+                    <div className="text-xs text-slate-600 dark:text-slate-300">
+                      অধ্যায়ের প্রতিটি শিখনফলের সাথে সমন্বিত মূল কনসেপ্ট নোট।
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 

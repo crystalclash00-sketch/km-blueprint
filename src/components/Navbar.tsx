@@ -29,36 +29,26 @@ export const Navbar: React.FC = () => {
   return (
     <header className="sticky top-0 z-30 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
-        {/* Left Side: Mobile Hamburger + Brand Logo */}
-        <div className="flex items-center gap-2.5">
-          <button
-            onClick={() => setIsMobileNavOpen(true)}
-            aria-label="মেনু খুলুন"
-            className="md:hidden p-2 rounded-xl text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
-          >
-            <Menu className="w-5 h-5" />
-          </button>
-
-          <div
-            onClick={() => setActivePage('dashboard')}
-            className="flex items-center gap-3 cursor-pointer group"
-          >
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-violet-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20 group-hover:scale-105 transition-transform">
-              <span className="font-mono font-black text-lg">K&M</span>
+        {/* Left Side: Brand Logo & Title */}
+        <div
+          onClick={() => setActivePage('dashboard')}
+          className="flex items-center gap-3 cursor-pointer group"
+        >
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-violet-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20 group-hover:scale-105 transition-transform">
+            <span className="font-mono font-black text-lg">K&M</span>
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <h1 className="font-extrabold text-slate-900 dark:text-white text-base sm:text-lg tracking-tight">
+                K&M Blueprint
+              </h1>
+              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300">
+                HSC Science
+              </span>
             </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h1 className="font-extrabold text-slate-900 dark:text-white text-base sm:text-lg tracking-tight">
-                  K&M Blueprint
-                </h1>
-                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300">
-                  HSC Science
-                </span>
-              </div>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400 hidden sm:block">
-                Bangladesh's First All-in-One HSC Learning Platform
-              </p>
-            </div>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 hidden sm:block">
+              Bangladesh's First All-in-One HSC Learning Platform
+            </p>
           </div>
         </div>
 
@@ -106,18 +96,12 @@ export const Navbar: React.FC = () => {
             className="flex items-center gap-2 pl-2 pr-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 transition group"
           >
             <span className="text-lg leading-none">{currentUser.avatar}</span>
-            <div className="text-left hidden lg:block">
-              <div className="text-xs font-bold text-slate-900 dark:text-white leading-tight">
+            <div className="text-left hidden sm:block max-w-[140px] md:max-w-[200px]">
+              <div className="text-xs font-bold text-slate-900 dark:text-white leading-tight truncate">
                 {currentUser.displayName}
               </div>
-              <div className="text-[10px] uppercase font-semibold text-slate-500 dark:text-slate-400 flex items-center gap-1">
-                {currentUser.role === 'owner' ? (
-                  <span className="text-purple-600 dark:text-purple-400 font-bold flex items-center gap-0.5">
-                    <Shield className="w-2.5 h-2.5" /> Owner
-                  </span>
-                ) : (
-                  <span className="text-blue-600 dark:text-blue-400 font-semibold">Student</span>
-                )}
+              <div className="text-[10px] text-slate-500 dark:text-slate-400 font-mono truncate">
+                {currentUser.email || 'student@kmblueprint.bd'}
               </div>
             </div>
           </button>
@@ -130,6 +114,15 @@ export const Navbar: React.FC = () => {
           >
             <LogOut className="w-4 h-4" />
             <span className="text-xs font-bold hidden xl:inline">লগআউট</span>
+          </button>
+
+          {/* Right-Hand Mobile Menu Trigger */}
+          <button
+            onClick={() => setIsMobileNavOpen(true)}
+            aria-label="মেনু খুলুন"
+            className="md:hidden p-2 rounded-xl text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+          >
+            <Menu className="w-5 h-5" />
           </button>
         </div>
       </div>

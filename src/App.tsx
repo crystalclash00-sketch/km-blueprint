@@ -25,6 +25,7 @@ import { TextbookDiscoveryView } from './components/TextbookDiscoveryView';
 import { OwnerPanel } from './components/OwnerPanel';
 import { RoutineCalendarView } from './components/RoutineCalendarView';
 import { AuthView } from './components/AuthView';
+import { QuestionBankView } from './components/QuestionBankView';
 import {
   HelpCircle,
   FileText,
@@ -69,6 +70,7 @@ const MainContentRouter: React.FC = () => {
       return <LearningWorkspace />;
 
     case 'remaining_syllabus':
+    case 'syllabus_progress':
       return <RemainingSyllabusView />;
 
     case 'mcq_exam_center':
@@ -79,6 +81,7 @@ const MainContentRouter: React.FC = () => {
       return <ExamRunner />;
 
     case 'exam_results':
+    case 'exam_history':
       return <ExamResultView />;
 
     case 'formula_center':
@@ -116,46 +119,16 @@ const MainContentRouter: React.FC = () => {
 
     case 'question_bank':
     case 'previous_board_papers':
-      return (
-        <div className="space-y-6 pb-12 animate-fade-in">
-          <div>
-            <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">
-              প্রশ্ন ব্যাংক ও বিগত বোর্ড প্রশ্নপত্র (Question Bank)
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-500 mt-1">
-              এইচএসসি বিগত বোর্ড পরীক্ষা ও মৌলিক K&M প্র্যাকটিস প্রশ্ন ভাণ্ডার ({questionBank.length} টি ভেরিফাইড প্রশ্ন)
-            </p>
-          </div>
-          <div className="space-y-3">
-            {questionBank.map((q, idx) => (
-              <div key={q.id} className="p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-2">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="font-bold text-blue-600">{q.subjectId.toUpperCase()} • Paper {q.paperNumber}</span>
-                  <span className="text-slate-400 font-mono">{q.origin}</span>
-                </div>
-                <div className="text-sm font-bold text-slate-900 dark:text-white">{idx + 1}. {q.questionText}</div>
-                {q.options && (
-                  <div className="grid grid-cols-2 gap-2 text-xs pt-1">
-                    {q.options.map((opt, oIdx) => (
-                      <div key={oIdx} className={`p-2.5 rounded-xl border ${oIdx === q.correctOptionIndex ? 'bg-emerald-50 dark:bg-emerald-950/30 border-emerald-300 font-bold text-emerald-800 dark:text-emerald-300' : 'bg-slate-50 dark:bg-slate-800/40 border-slate-200 dark:border-slate-800'}`}>
-                        {opt}
-                      </div>
-                    ))}
-                  </div>
-                )}
-                <div className="text-xs text-slate-600 dark:text-slate-400 pt-1">
-                  <strong>ব্যাখ্যা: </strong>{q.explanation}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      );
+    case 'cq_practice':
+      return <QuestionBankView />;
+
+    case 'submit_study':
+      return <DashboardView />;
 
     case 'submission_history':
       return (
         <div className="space-y-6 pb-12 animate-fade-in">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
               <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">
                 পড়াশোনা জমার ইতিহাস (Submission History)
@@ -166,59 +139,48 @@ const MainContentRouter: React.FC = () => {
             </div>
             <button
               onClick={() => setIsSubmitStudyModalOpen(true)}
-              className="px-4 py-2 text-xs font-bold text-white bg-blue-600 rounded-xl"
+              className="px-4 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-sm"
             >
               নতুন পড়াশোনা জমা দিন +
             </button>
           </div>
-          <div className="space-y-3">
-            {studentData.submissions.map(sub => (
-              <div key={sub.id} className="p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-2 text-xs">
-                <div className="flex items-center justify-between">
-                  <span className="font-bold text-blue-600 uppercase">{sub.subjectId} • Paper {sub.paperNumber}</span>
-                  <span className="text-slate-400 font-mono">{sub.date} ({sub.timeSpentMinutes} মিনিট)</span>
-                </div>
-                <div className="text-slate-800 dark:text-slate-200 text-sm font-medium">
-                  {sub.naturalLanguageNote}
-                </div>
-                <div className="text-slate-500">{sub.whatPractised}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      );
 
-    case 'cq_practice':
-      return (
-        <div className="space-y-6 pb-12 animate-fade-in">
-          <div>
-            <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">
-              সৃজনশীল প্রশ্ন অনুশীলন (CQ Practice)
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-500 mt-1">
-              উদ্দীপক, জ্ঞান, অনুধাবন, প্রয়োগ ও উচ্চতর দক্ষতামূলক প্রশ্ন ও আদর্শ উত্তর
-            </p>
-          </div>
-          <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 space-y-4">
-            <div className="text-xs font-bold text-blue-600">পদার্থবিজ্ঞান ১ম পত্র • ভেক্টর (উদ্দীপক)</div>
-            <p className="text-sm font-medium text-slate-800 dark:text-slate-200 leading-relaxed bg-slate-50 dark:bg-slate-800/40 p-4 rounded-2xl">
-              একটি নদীতে স্রোতের বেগ 4 km/h। একজন মাঝি 8 km/h বেগে নৌকা চালিয়ে নদী পার হতে চায়। নদীর প্রস্থ 1.5 km।
-            </p>
-            <div className="space-y-3 text-xs">
-              <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40">
-                <span className="font-bold text-slate-900 dark:text-white block mb-0.5">ক. অবস্থান ভেক্টর কাকে বলে? (১)</span>
-                <span className="text-slate-600 dark:text-slate-400">প্রসঙ্গ কাঠামোর মূল বিন্দুর সাপেক্ষে কোনো বিন্দুর অবস্থান যে ভেক্টরের সাহায্যে নির্দেশ করা হয় তাকে অবস্থান ভেক্টর বা ব্যাসার্ধ ভেক্টর বলে।</span>
+          {studentData.submissions.length === 0 ? (
+            <div className="bg-white dark:bg-slate-900 rounded-3xl p-8 sm:p-12 border border-slate-200 dark:border-slate-800 text-center space-y-4">
+              <div className="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-950/40 text-blue-600 flex items-center justify-center mx-auto">
+                <History className="w-6 h-6" />
               </div>
-              <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40">
-                <span className="font-bold text-slate-900 dark:text-white block mb-0.5">খ. স্কেলার গুণন বিনিময় সূত্র মেনে চলে কেন? (২)</span>
-                <span className="text-slate-600 dark:text-slate-400">A·B = AB cosθ এবং B·A = BA cosθ = AB cosθ। যেহেতু মান ও স্কেলার চিহ্ন অপরিবর্তিত থাকে, তাই এটি বিনিময় সূত্র মেনে চলে।</span>
+              <div className="space-y-1">
+                <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                  কোনো রেকর্ড নেই (No Submissions Recorded)
+                </h3>
+                <p className="text-xs text-slate-500 max-w-sm mx-auto leading-relaxed">
+                  তুমি এখনো কোনো দৈনিক পড়াশোনা বা অধ্যায় পড়ার লগ জমা দাওনি। পড়াশোনা শুরু করে সময় ও নোট জমা দিলে এখানে তোমার অগ্রগতি সংরক্ষিত থাকবে।
+                </p>
               </div>
-              <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40">
-                <span className="font-bold text-slate-900 dark:text-white block mb-0.5">গ. সোজাসুজি অপর পারে পৌঁছাতে মাঝিকে কত কোণে নৌকা চালাতে হবে? (৩)</span>
-                <span className="text-slate-600 dark:text-slate-400">cos α = -u/v = -4/8 = -0.5 → α = 120° কোণে যাত্রা করতে হবে।</span>
-              </div>
+              <button
+                onClick={() => setIsSubmitStudyModalOpen(true)}
+                className="px-5 py-2.5 rounded-xl text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 shadow-sm"
+              >
+                এখনই পড়াশোনা জমা দিন
+              </button>
             </div>
-          </div>
+          ) : (
+            <div className="space-y-3">
+              {studentData.submissions.map(sub => (
+                <div key={sub.id} className="p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-2 text-xs">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-blue-600 uppercase">{sub.subjectId} • Paper {sub.paperNumber}</span>
+                    <span className="text-slate-400 font-mono">{sub.date} ({sub.timeSpentMinutes} মিনিট)</span>
+                  </div>
+                  <div className="text-slate-800 dark:text-slate-200 text-sm font-medium">
+                    {sub.naturalLanguageNote}
+                  </div>
+                  <div className="text-slate-500">{sub.whatPractised}</div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       );
 
@@ -370,14 +332,15 @@ const AppLayout: React.FC = () => {
       {/* Navigation Bar */}
       <Navbar />
 
-      {/* Center Workspace with Desktop Sidebar */}
+      {/* Center Workspace with Right-Hand Desktop Sidebar */}
       <div className="flex-1 flex max-w-7xl w-full mx-auto">
-        <Sidebar />
-
         {/* Main Dynamic Page Pane */}
         <main className="flex-1 min-w-0 p-4 sm:p-6 lg:p-8 pb-20 md:pb-8">
           <MainContentRouter />
         </main>
+
+        {/* Right-Hand Desktop Navigation Sidebar */}
+        <Sidebar />
       </div>
 
       {/* Mobile Navigation */}

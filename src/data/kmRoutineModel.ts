@@ -50,7 +50,7 @@ export const master391DayPreset: RoutineDayTask[] = [
     paper: 1,
     chapterOrTopic: 'ম্যাট্রিক্স ও নির্ণায়ক L-1',
     classType: 'BASIC CLASS',
-    actionInstructions: ['Edge Course Platform-এ ক্লাস দেখা', 'গুরুত্বপূর্ণ পয়েন্ট নোট করা', 'দাগানো বই — সংশ্লিষ্ট চ্যাপ্টার পড়া', 'লেকচার শিট সম্পন্ন করা']
+    actionInstructions: ['অনলাইন / সেলফ স্টাডি ক্লাস ও মূল বিষয়বস্তু দেখা', 'গুরুত্বপূর্ণ পয়েন্ট নোট করা', 'দাগানো বই — সংশ্লিষ্ট চ্যাপ্টার পড়া', 'লেকচার শিট সম্পন্ন করা']
   },
   {
     id: 'd-1-2',
@@ -62,7 +62,7 @@ export const master391DayPreset: RoutineDayTask[] = [
     paper: 1,
     chapterOrTopic: 'ল্যাবরেটরির নিরাপদ ব্যবহার',
     classType: 'BASIC CLASS',
-    actionInstructions: ['Edge Course Platform-এ ক্লাস দেখা', 'গুরুত্বপূর্ণ পয়েন্ট নোট করা', 'দাগানো বই — সংশ্লিষ্ট চ্যাপ্টার পড়া', 'লেকচার শিট সম্পন্ন করা']
+    actionInstructions: ['অনলাইন / সেলফ স্টাডি ক্লাস ও মূল বিষয়বস্তু দেখা', 'গুরুত্বপূর্ণ পয়েন্ট নোট করা', 'দাগানো বই — সংশ্লিষ্ট চ্যাপ্টার পড়া', 'লেকচার শিট সম্পন্ন করা']
   },
   {
     id: 'd-2-1',
@@ -74,7 +74,7 @@ export const master391DayPreset: RoutineDayTask[] = [
     paper: 1,
     chapterOrTopic: 'ভৌত জগত ও পরিমাপ',
     classType: 'BASIC CLASS',
-    actionInstructions: ['Edge Course Platform-এ ক্লাস দেখা', 'গুরুত্বপূর্ণ পয়েন্ট নোট করা', 'দাগানো বই — সংশ্লিষ্ট চ্যাপ্টার পড়া', 'লেকচার শিট সম্পন্ন করা']
+    actionInstructions: ['অনলাইন / সেলফ স্টাডি ক্লাস ও মূল বিষয়বস্তু দেখা', 'গুরুত্বপূর্ণ পয়েন্ট নোট করা', 'দাগানো বই — সংশ্লিষ্ট চ্যাপ্টার পড়া', 'লেকচার শিট সম্পন্ন করা']
   },
   {
     id: 'd-2-2',
@@ -86,7 +86,7 @@ export const master391DayPreset: RoutineDayTask[] = [
     paper: 1,
     chapterOrTopic: 'কোষ ও এর গঠন L-1',
     classType: 'BASIC CLASS',
-    actionInstructions: ['Edge Course Platform-এ ক্লাস দেখা', 'গুরুত্বপূর্ণ পয়েন্ট নোট করা', 'দাগানো বই — সংশ্লিষ্ট চ্যাপ্টার পড়া', 'লেকচার শিট সম্পন্ন করা']
+    actionInstructions: ['অনলাইন / সেলফ স্টাডি ক্লাস ও মূল বিষয়বস্তু দেখা', 'গুরুত্বপূর্ণ পয়েন্ট নোট করা', 'দাগানো বই — সংশ্লিষ্ট চ্যাপ্টার পড়া', 'লেকচার শিট সম্পন্ন করা']
   },
   {
     id: 'd-3-1',

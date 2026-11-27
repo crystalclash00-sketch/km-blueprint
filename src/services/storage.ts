@@ -52,9 +52,11 @@ export const loadAllAccounts = (): UserAccount[] => {
   return [
     {
       id: 'owner_master',
-      username: 'owner',
-      displayName: 'Platform Director / Owner',
+      username: 'director',
+      displayName: 'Platform Director',
       role: 'owner',
+      email: 'director@kmblueprint.bd',
+      pin: '2026',
       avatar: '👨‍🏫',
       group: 'Science',
       targetExamYear: 2026,
@@ -63,19 +65,11 @@ export const loadAllAccounts = (): UserAccount[] => {
     {
       id: 'student_1',
       username: 'student1',
-      displayName: 'HSC Science Student 1',
+      displayName: 'HSC Science Student',
       role: 'student',
+      email: 'student1@kmblueprint.bd',
+      pin: '1234',
       avatar: '👨‍🎓',
-      group: 'Science',
-      targetExamYear: 2026,
-      createdAt: new Date().toISOString()
-    },
-    {
-      id: 'student_2',
-      username: 'student2',
-      displayName: 'HSC Science Student 2',
-      role: 'student',
-      avatar: '👩‍🎓',
       group: 'Science',
       targetExamYear: 2026,
       createdAt: new Date().toISOString()
@@ -140,28 +134,32 @@ export const createInitialStudentData = (userId: string): StudentPrivateData => 
   streakDays: 1
 });
 
-// Load Student Private Data (Local fallback + Cloud Sync)
-export const loadStudentData = (userId: string): StudentPrivateData => {
-  const storageKey = `km_student_data_${userId}`;
+// Load Student Private Data (Keyed by Email across sessions)
+export const loadStudentData = (userId: string, email?: string): StudentPrivateData => {
+  const effectiveKey = (email && email.includes('@'))
+    ? `km_user_progress_${email.toLowerCase().trim()}`
+    : (userId.includes('@') ? `km_user_progress_${userId.toLowerCase().trim()}` : `km_student_data_${userId}`);
   try {
-    const raw = localStorage.getItem(storageKey);
+    const raw = localStorage.getItem(effectiveKey);
     if (raw) {
       return JSON.parse(raw);
     }
   } catch (e) {
-    console.error(`Error loading data for ${userId}:`, e);
+    console.error(`Error loading data for ${effectiveKey}:`, e);
   }
 
   const initial = createInitialStudentData(userId);
-  localStorage.setItem(storageKey, JSON.stringify(initial));
+  localStorage.setItem(effectiveKey, JSON.stringify(initial));
   return initial;
 };
 
-// Save Student Private Data with Cloud Synchronization
-export const saveStudentData = async (data: StudentPrivateData): Promise<void> => {
-  const storageKey = `km_student_data_${data.userId}`;
+// Save Student Private Data with Cloud Synchronization & Email-Keyed Storage
+export const saveStudentData = async (data: StudentPrivateData, email?: string): Promise<void> => {
+  const effectiveKey = (email && email.includes('@'))
+    ? `km_user_progress_${email.toLowerCase().trim()}`
+    : (data.userId?.includes('@') ? `km_user_progress_${data.userId.toLowerCase().trim()}` : `km_student_data_${data.userId}`);
   // 1. Immediately cache locally for offline PWA & instantaneous UI response
-  localStorage.setItem(storageKey, JSON.stringify(data));
+  localStorage.setItem(effectiveKey, JSON.stringify(data));
 
   // 2. Synchronize to Supabase PostgreSQL when credentials configured & online
   if (isSupabaseConfigured && navigator.onLine) {

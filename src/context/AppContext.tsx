@@ -227,15 +227,44 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [hscConfig, setHscConfigState] = useState<HscExamConfig>(() => globalData.hscConfig);
   const [hscCountdown, setHscCountdown] = useState<CountdownTime | null>(() => calculateHscCountdown(hscConfig));
 
-  // 3. Student Private Data (Isolated per user)
-  const [studentData, setStudentDataState] = useState<StudentPrivateData>(() => loadStudentData(currentUser.id));
+  // 3. Student Private Data (Isolated per user, keyed by email)
+  const [studentData, setStudentDataState] = useState<StudentPrivateData>(() => loadStudentData(currentUser.id, currentUser.email));
 
   // 4. Navigation State
   const [activePage, setActivePage] = useState<NavigationPage>('dashboard');
-  const [selectedSubjectId, setSelectedSubjectId] = useState<string>('phy');
-  const [selectedPaperNumber, setSelectedPaperNumber] = useState<1 | 2>(1);
-  const [selectedChapterId, setSelectedChapterId] = useState<string>('phy-1-2');
-  const [selectedTopicId, setSelectedTopicId] = useState<string>('phy-1-2-t1');
+  const [selectedSubjectId, setSelectedSubjectIdState] = useState<string>('ban');
+  const [selectedPaperNumber, setSelectedPaperNumberState] = useState<1 | 2>(1);
+  const [selectedChapterId, setSelectedChapterId] = useState<string>('ban-1-1');
+  const [selectedTopicId, setSelectedTopicId] = useState<string>('ban-1-1-t1');
+
+  const setSelectedSubjectId = (id: string) => {
+    setSelectedSubjectIdState(id);
+    const sub = globalData.curriculum.find(s => s.id === id);
+    if (sub && sub.papers.length > 0) {
+      const p = sub.papers[0];
+      setSelectedPaperNumberState(p.paperNumber);
+      if (p.chapters.length > 0) {
+        setSelectedChapterId(p.chapters[0].id);
+        if (p.chapters[0].topics.length > 0) {
+          setSelectedTopicId(p.chapters[0].topics[0].id);
+        }
+      }
+    }
+  };
+
+  const setSelectedPaperNumber = (num: 1 | 2) => {
+    setSelectedPaperNumberState(num);
+    const sub = globalData.curriculum.find(s => s.id === selectedSubjectId);
+    if (sub) {
+      const p = sub.papers.find(paper => paper.paperNumber === num) || sub.papers[0];
+      if (p && p.chapters.length > 0) {
+        setSelectedChapterId(p.chapters[0].id);
+        if (p.chapters[0].topics.length > 0) {
+          setSelectedTopicId(p.chapters[0].topics[0].id);
+        }
+      }
+    }
+  };
 
   // 5. Exam State
   const [activeExamAttempt, setActiveExamAttempt] = useState<ExamAttempt | null>(null);
@@ -274,7 +303,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const switchUser = (userId: string) => {
     setActiveUserId(userId);
     setCurrentUserIdState(userId);
-    const freshStudentData = loadStudentData(userId);
+    const targetAcc = accounts.find(a => a.id === userId);
+    const freshStudentData = loadStudentData(userId, targetAcc?.email);
     setStudentDataState(freshStudentData);
     setActivePage('dashboard');
   };
@@ -459,7 +489,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       topicStatuses: updatedStatuses
     };
     setStudentDataState(updatedData);
-    saveStudentData(updatedData);
+    saveStudentData(updatedData, currentUser.email);
   };
 
   const confirmTopicCompletion = (topicId: string) => {
@@ -475,7 +505,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       xp: studentData.xp + 50
     };
     setStudentDataState(updatedData);
-    saveStudentData(updatedData);
+    saveStudentData(updatedData, currentUser.email);
   };
 
   const addStudySubmission = (submission: StudySubmissionActivity) => {
@@ -500,7 +530,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       xp: studentData.xp + 75
     };
     setStudentDataState(updatedData);
-    saveStudentData(updatedData);
+    saveStudentData(updatedData, currentUser.email);
   };
 
   const saveExamAttemptRecord = (attempt: ExamAttempt) => {
@@ -511,7 +541,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       xp: studentData.xp + (attempt.totalScore * 10)
     };
     setStudentDataState(updatedData);
-    saveStudentData(updatedData);
+    saveStudentData(updatedData, currentUser.email);
   };
 
   const addPersonalFlashcard = (card: Omit<FlashcardItem, 'id' | 'userId'>) => {
@@ -526,7 +556,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       flashcards: updatedCards
     };
     setStudentDataState(updatedData);
-    saveStudentData(updatedData);
+    saveStudentData(updatedData, currentUser.email);
   };
 
   const updateMissionStatus = (missionId: string, status: 'pending' | 'completed' | 'partial' | 'skipped') => {
@@ -539,7 +569,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       xp: status === 'completed' ? studentData.xp + 50 : studentData.xp
     };
     setStudentDataState(updatedData);
-    saveStudentData(updatedData);
+    saveStudentData(updatedData, currentUser.email);
   };
 
   const addTimerSessionRecord = (session: Omit<GeneralTimerSession, 'id' | 'userId'>) => {
@@ -553,7 +583,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       timerSessions: [newSession, ...studentData.timerSessions]
     };
     setStudentDataState(updatedData);
-    saveStudentData(updatedData);
+    saveStudentData(updatedData, currentUser.email);
   };
 
   const saveChapterNote = (chapterId: string, note: string) => {
@@ -563,7 +593,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       personalNotes: updatedNotes
     };
     setStudentDataState(updatedData);
-    saveStudentData(updatedData);
+    saveStudentData(updatedData, currentUser.email);
   };
 
   // HSC Date Monitor Actions

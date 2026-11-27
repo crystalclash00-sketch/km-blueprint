@@ -97,24 +97,54 @@ export const StudyTimerView: React.FC = () => {
         </span>
       </div>
 
-      {/* Mode Selector */}
-      <div className="flex justify-center gap-2">
-        {(['pomodoro', 'stopwatch', 'countdown'] as const).map(m => (
-          <button
-            key={m}
-            onClick={() => {
-              setMode(m);
-              handleReset();
-            }}
-            className={`px-4 py-2 text-xs font-bold rounded-2xl transition capitalize ${
-              mode === m
-                ? 'bg-blue-600 text-white shadow-sm'
-                : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-800'
-            }`}
-          >
-            {m === 'pomodoro' ? 'Pomodoro (২৫ মি.)' : m === 'stopwatch' ? 'Stopwatch' : 'Countdown (৪৫ মি.)'}
-          </button>
-        ))}
+      {/* Preset Buttons */}
+      <div className="flex flex-wrap justify-center gap-2">
+        <button
+          onClick={() => {
+            setMode('pomodoro');
+            setIsActive(false);
+            setIsBreak(false);
+            setSecondsLeft(25 * 60);
+          }}
+          className={`px-4 py-2 text-xs font-bold rounded-2xl transition ${
+            mode === 'pomodoro' && secondsLeft === 25 * 60
+              ? 'bg-blue-600 text-white shadow-sm'
+              : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:bg-slate-50'
+          }`}
+        >
+          ⏱️ ২৫ মিনিট ফোকাস (Pomodoro)
+        </button>
+
+        <button
+          onClick={() => {
+            setMode('countdown');
+            setIsActive(false);
+            setIsBreak(false);
+            setSecondsLeft(45 * 60);
+          }}
+          className={`px-4 py-2 text-xs font-bold rounded-2xl transition ${
+            mode === 'countdown' && secondsLeft === 45 * 60
+              ? 'bg-blue-600 text-white shadow-sm'
+              : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:bg-slate-50'
+          }`}
+        >
+          🎯 ৪৫ মিনিট ডিপ স্টাডি (Deep Focus)
+        </button>
+
+        <button
+          onClick={() => {
+            setMode('stopwatch');
+            setIsActive(false);
+            setStopwatchSeconds(0);
+          }}
+          className={`px-4 py-2 text-xs font-bold rounded-2xl transition ${
+            mode === 'stopwatch'
+              ? 'bg-blue-600 text-white shadow-sm'
+              : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:bg-slate-50'
+          }`}
+        >
+          ⏳ স্টপওয়াচ (Open Study)
+        </button>
       </div>
 
       {/* Timer Circle / Card */}

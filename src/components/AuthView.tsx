@@ -209,38 +209,6 @@ export const AuthView: React.FC = () => {
             {isLoading ? 'যাচাই করা হচ্ছে...' : 'লগইন করুন'}
             <ArrowRight className="w-4 h-4" />
           </button>
-
-          {/* Quick Select Profile for Existing Users */}
-          {accounts.length > 0 && (
-            <div className="pt-3 border-t border-slate-100 dark:border-slate-800 space-y-2">
-              <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider text-center">
-                নিবন্ধিত প্রোফাইল দিয়ে সরাসরি প্রবেশ করুন
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                {accounts.slice(0, 4).map(acc => (
-                  <button
-                    key={acc.id}
-                    type="button"
-                    onClick={() => {
-                      loginWithPin(acc.id, '');
-                      setActivePage('dashboard');
-                    }}
-                    className="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-blue-500 dark:hover:border-blue-500 bg-slate-50/50 dark:bg-slate-800/50 text-left transition flex items-center gap-2 group"
-                  >
-                    <span className="text-base">{acc.avatar}</span>
-                    <div className="truncate">
-                      <div className="text-xs font-bold text-slate-800 dark:text-slate-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 truncate">
-                        {acc.displayName}
-                      </div>
-                      <div className="text-[10px] text-slate-400 capitalize">
-                        {acc.role}
-                      </div>
-                    </div>
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
         </form>
       )}
 

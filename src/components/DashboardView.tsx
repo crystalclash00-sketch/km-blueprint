@@ -240,7 +240,7 @@ export const DashboardView: React.FC = () => {
               বিষয়ভিত্তিক সিলেবাস অগ্রগতি (Subject Progress)
             </h3>
             <button
-              onClick={() => setActivePage('syllabus_progress')}
+              onClick={() => setActivePage('hsc_library')}
               className="text-xs font-bold text-blue-600 hover:underline"
             >
               সকল পত্র দেখুন →
